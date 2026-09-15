@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Safe Heaven Accomodations
 
-## Getting Started
+Website for Safe Heaven Accomodations — student housing and co-living. Visitors
+browse properties, compare rooms and pricing, and submit a booking enquiry; staff
+manage listings, availability and leads through a built-in CMS.
 
-First, run the development server:
+## Stack
+
+| Layer     | Choice                                              |
+| --------- | --------------------------------------------------- |
+| Framework | Next.js 16.2.6 (App Router, `src/`)                 |
+| UI        | React 19, Tailwind CSS v4, TypeScript               |
+| CMS       | Payload 3 — mounted in-app at `/admin`              |
+| Database  | Supabase Postgres (`@payloadcms/db-postgres`)       |
+| Media     | Supabase Storage via the S3-compatible adapter      |
+| Email     | Resend                                              |
+| Hosting   | Vercel                                              |
+
+There is no separate backend service. The CMS, the REST API and the lead
+handling all run inside this one Next.js application.
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # then fill in the values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Site: http://localhost:3000
+- Admin: http://localhost:3000/admin _(available from T2 onward)_
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command         | Purpose                     |
+| --------------- | --------------------------- |
+| `npm run dev`   | Development server          |
+| `npm run build` | Production build            |
+| `npm run start` | Serve the production build  |
+| `npm run lint`  | ESLint                      |
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/                 routes, layouts, route handlers
+  components/
+    ui/                primitives (Button, Card, Modal, ...)
+    layout/            Header, Footer, shell
+    sections/          composed page sections
+  lib/                 data access, helpers, validation schemas
+  payload/
+    collections/       Payload collection configs
+    globals/           Payload global configs
+docs/
+  PLAN.md              phased build plan and decisions
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Working on this repo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`AGENTS.md` applies: this is Next.js 16, whose APIs differ from earlier
+versions. Check `node_modules/next/dist/docs/` before using a Next API.
 
-## Deploy on Vercel
+The build plan, data model and phase order live in [`docs/PLAN.md`](docs/PLAN.md).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [`.env.example`](.env.example). `.env.local` is git-ignored.
+
+## Deployment
+
+Vercel, with Supabase for the database and Supabase Storage for media.
+Deployment steps are covered in T23 of the plan.
