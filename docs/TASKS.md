@@ -13,9 +13,9 @@ subtask at a time, top to bottom.
 
 | | Meaning | Count |
 | --- | --- | --- |
-| `[x]` | Built and verified | 106 |
-| `[~]` | Built, cannot be verified until Postgres connects | 22 |
-| `[!]` | Blocked on credentials, content or a decision | 33 |
+| `[x]` | Built and verified | 108 |
+| `[~]` | Built, cannot be verified until Postgres connects | 23 |
+| `[!]` | Blocked on credentials, content or a decision | 31 |
 | `[ ]` | Not started | rest |
 
 **One blocker dominates.** The database has never connected, so nothing that
@@ -65,7 +65,7 @@ Repo, CMS and database standing up. Everything else depends on this.
 | `[x]` | **E0.5** Verify `/admin` boots against Supabase | Confirmed 2026-09-16: panel loads and lists every collection against Supabase |
 | `[x]` | **E0.6** Create the first admin user | Confirmed 2026-09-16 |
 | `[x]` | **E0.7** Confirm `npm run dev` + `npm run build` on macOS | Confirmed 2026-09-16: dev server boots, all six routes return 200, production build passes |
-| `[ ]` | **E0.8** Add `.nvmrc` / engines field | Pin Node 22 so builds match |
+| `[x]` | **E0.8** Add `.nvmrc` / engines field | `.nvmrc` = 22 and `engines.node >= 22`, so Vercel builds on the same major you develop on |
 
 **Done when:** `/admin` loads, you can log in, and a test record saves to Supabase.
 
@@ -355,14 +355,14 @@ Not code. Blocks launch harder than anything above.
 | `[!]` | **E16.1** Buy domain + DNS | |
 | `[!]` | **E16.2** Vercel project + env vars | |
 | `[!]` | **E16.3** Supabase production DB | Already on the session pooler (`aws-0-ap-south-1.pooler.supabase.com:5432`) — carry it to prod |
-| `[!]` | **E16.4** Payload migrations for production | Dev push mode is not safe for prod |
+| `[~]` | **E16.4** Payload migrations for production | `push` now disabled in production and `migrationDir` set. You still need to generate the first migration — `npm run migrate:create` on your Mac, then commit it |
 | `[!]` | **E16.5** Verify sending domain in Resend | Unblocks E5.11 |
 | `[!]` | **E16.6** Rotate the database password | Current one was pasted in chat — dev only |
 | `[!]` | **E16.7** Smoke-test checklist | Every CTA, both form paths, all six routes, mobile + desktop |
 | `[!]` | **E16.8** Admin handover guide | Add a room, upload photos, mark sold out, read leads |
 | `[!]` | **E16.9** Supabase backup schedule | |
 | `[!]` | **E16.10** Uptime monitor | Also catches the free-tier project pausing |
-| `[!]` | **E16.11** Decide the production pooler mode | Vercel functions run concurrently and will exhaust a small pool. **Session pooler (5432)** keeps prepared statements, holds connections. **Transaction pooler (6543)** suits serverless better but breaks prepared statements, which Drizzle uses — that route needs `prepare: false` on the pool config or you get intermittent, confusing failures. Load-test before choosing |
+| `[x]` | **E16.11** Decide the production pooler mode | Decided. Use the TRANSACTION pooler (6543) on Vercel, SESSION pooler (5432) for migrations, `max: 1` per instance in production. The audit's `prepare: false` warning does NOT apply: the adapter uses node-postgres, not postgres.js, and issues no prepared statements — there is no such option in the types |
 
 ---
 

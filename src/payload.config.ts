@@ -93,6 +93,15 @@ export default buildConfig({
 		// Discrete fields, not a connection string — see buildPoolConfig for why
 		// passing both silently ignores DATABASE_PASSWORD.
 		pool: buildPoolConfig(),
+		migrationDir: path.resolve(dirname, 'migrations'),
+		/**
+		 * Schema push is a development convenience: it diffs the config against
+		 * the database and alters tables to match, with no record of what it did.
+		 * That is fine on a laptop and unacceptable in production, where an
+		 * unreviewed ALTER against live data is how a column of enquiries
+		 * disappears. Production runs migrations instead.
+		 */
+		push: process.env.NODE_ENV !== 'production',
 	}),
 	// Image resizing for uploads
 	sharp,
