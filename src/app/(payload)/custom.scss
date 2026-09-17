@@ -1,0 +1,33 @@
+/**
+ * Admin panel branding.
+ *
+ * Deliberately small, and deliberately theme-agnostic. Payload's admin ships a
+ * complete design system with both a light and a dark theme, and the panel
+ * follows the operating system — so any colour hardcoded here has to work on
+ * both. Anything that cannot is left to Payload.
+ *
+ * (Learned the hard way: an earlier version set the heading to the site's
+ * near-black ink, which scored 1.04:1 against the dark theme's background and
+ * made "Welcome" invisible.)
+ */
+
+// Primary actions — Save, Create, Publish.
+//
+// This is action-ink rather than the site's brighter action orange. White text
+// on #f97316 is 2.80:1, which fails WCAG AA for normal text; #c2410c is 5.18:1
+// and still unmistakably the brand. The admin is a tool people use all day, so
+// legibility wins over exactness here.
+.btn--style-primary {
+	--bg-color: #c2410c;
+	--hover-bg: #9a3412;
+	--color: #ffffff;
+	--hover-color: #ffffff;
+}
+
+// Focus rings. A hue, not a lightness, so it reads on either theme.
+.field-type input:focus-visible,
+.field-type textarea:focus-visible,
+.field-type select:focus-visible {
+	outline: 2px solid #0ea5e9;
+	outline-offset: 1px;
+}
