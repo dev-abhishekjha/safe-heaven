@@ -1,0 +1,79 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"ignore": [
+			"node_modules",
+			"**/node_modules/**",
+			".next",
+			"dist",
+			"public",
+			"src/payload-types.ts",
+			"src/app/(payload)/admin/importMap.js"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"ignore": ["node_modules", ".next", "dist", "public", "**/node_modules/**"]
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": {
+					"level": "error",
+					"fix": "none"
+				},
+				"useExhaustiveDependencies": {
+					"level": "off",
+					"options": {}
+				}
+			},
+			"style": {
+				"useConst": {
+					"level": "warn",
+					"fix": "unsafe"
+				},
+				"useTemplate": {
+					"level": "warn",
+					"fix": "safe"
+				}
+			},
+			"suspicious": {
+				"noConsole": {
+					"level": "error",
+					"fix": "none",
+					"options": {
+						"allow": ["assert", "error", "info", "warn"]
+					}
+				}
+			},
+			"complexity": {
+				"noForEach": {
+					"level": "off"
+				}
+			},
+			"a11y": {
+				"useSemanticElements": {
+					"level": "off"
+				}
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single"
+		}
+	}
+}
