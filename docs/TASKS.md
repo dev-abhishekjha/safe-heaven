@@ -362,7 +362,7 @@ Not code. Blocks launch harder than anything above.
 | `[!]` | **E16.8** Admin handover guide | Add a room, upload photos, mark sold out, read leads |
 | `[!]` | **E16.9** Supabase backup schedule | |
 | `[!]` | **E16.10** Uptime monitor | Also catches the free-tier project pausing |
-| `[x]` | **E16.11** Decide the production pooler mode | Decided. Session pooler (5432) for now with `max: 1` per instance; switch DATABASE_URI to the transaction pooler (6543) and set DATABASE_DIRECT_URI if connections run out. The audit's `prepare: false` warning does NOT apply — the adapter uses node-postgres, not postgres.js |
+| `[x]` | **E16.11** Decide the production pooler mode | **Settled the hard way.** Session pooler (5432) on Vercel fails: it holds a connection per client, Vercel runs many instances at once, the free tier runs out, and every query dies with `timeout exceeded when trying to connect`. Production uses the TRANSACTION pooler (6543) via `DATABASE_URI`; migrations use the session pooler via `DATABASE_DIRECT_URI`. The audit's `prepare: false` warning still does not apply — the adapter is node-postgres, not postgres.js |
 
 ---
 
