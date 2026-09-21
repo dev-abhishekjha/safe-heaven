@@ -13,9 +13,9 @@ subtask at a time, top to bottom.
 
 | | Meaning | Count |
 | --- | --- | --- |
-| `[x]` | Built and verified | 108 |
-| `[~]` | Built, cannot be verified until Postgres connects | 23 |
-| `[!]` | Blocked on credentials, content or a decision | 31 |
+| `[x]` | Built and verified | 111 |
+| `[~]` | Built, cannot be verified until Postgres connects | 22 |
+| `[!]` | Blocked on credentials, content or a decision | 29 |
 | `[ ]` | Not started | rest |
 
 **One blocker dominates.** The database has never connected, so nothing that
@@ -353,16 +353,16 @@ Not code. Blocks launch harder than anything above.
 | | Task | Notes |
 | --- | --- | --- |
 | `[!]` | **E16.1** Buy domain + DNS | |
-| `[!]` | **E16.2** Vercel project + env vars | |
-| `[!]` | **E16.3** Supabase production DB | Already on the session pooler (`aws-0-ap-south-1.pooler.supabase.com:5432`) — carry it to prod |
-| `[~]` | **E16.4** Payload migrations for production | `push` now disabled in production and `migrationDir` set. You still need to generate the first migration — `npm run migrate:create` on your Mac, then commit it |
+| `[x]` | **E16.2** Vercel project + env vars | Deployed 2026-09-21 to safe-heaven-theta.vercel.app. 10 env vars set. `NEXT_PUBLIC_*` must be Config not Secret — Vercel refuses, correctly, since they are inlined into the browser bundle |
+| `[x]` | **E16.3** Supabase production DB | Production runs on the same Supabase project, session pooler 5432 |
+| `[x]` | **E16.4** Payload migrations for production | Initial migration generated (35 tables) and applied by `build:deploy` on the first successful deploy |
 | `[!]` | **E16.5** Verify sending domain in Resend | Unblocks E5.11 |
 | `[!]` | **E16.6** Rotate the database password | Current one was pasted in chat — dev only |
 | `[!]` | **E16.7** Smoke-test checklist | Every CTA, both form paths, all six routes, mobile + desktop |
 | `[!]` | **E16.8** Admin handover guide | Add a room, upload photos, mark sold out, read leads |
 | `[!]` | **E16.9** Supabase backup schedule | |
 | `[!]` | **E16.10** Uptime monitor | Also catches the free-tier project pausing |
-| `[x]` | **E16.11** Decide the production pooler mode | Decided. Use the TRANSACTION pooler (6543) on Vercel, SESSION pooler (5432) for migrations, `max: 1` per instance in production. The audit's `prepare: false` warning does NOT apply: the adapter uses node-postgres, not postgres.js, and issues no prepared statements — there is no such option in the types |
+| `[x]` | **E16.11** Decide the production pooler mode | Decided. Session pooler (5432) for now with `max: 1` per instance; switch DATABASE_URI to the transaction pooler (6543) and set DATABASE_DIRECT_URI if connections run out. The audit's `prepare: false` warning does NOT apply — the adapter uses node-postgres, not postgres.js |
 
 ---
 
