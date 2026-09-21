@@ -18,6 +18,10 @@
  *     unconfirmed answer seeded into it silently becomes a published one. Only
  *     the seven answers that restate rules the site already keeps are seeded;
  *     the rest are printed at the end for you to write (E15.8).
+ *
+ * The run ends by counting every collection it touched and printing the
+ * totals, so "it printed nothing" can never again be indistinguishable from
+ * "it did nothing".
  */
 import config from '@payload-config';
 import { getPayload } from 'payload';
@@ -255,10 +259,23 @@ async function main() {
 	log('✓ community page');
 
 	// ------------------------------------------------------------------ report
+	log('');
+	log('Now in the database:');
+	for (const collection of [
+		'properties',
+		'room-types',
+		'amenities',
+		'nearby-places',
+		'faqs',
+	] as const) {
+		const { totalDocs } = await payload.count({ collection });
+		log(`  ${String(totalDocs).padStart(3)}  ${collection}`);
+	}
+
 	const unconfirmed = FAQS.filter((faq) => !faq.confirmed);
 	log('');
 	log('Seeded. Still needs you:');
-	log(`  • About page — the origin story (E15.6). Not seeded on purpose.`);
+	log('  • About page — the origin story (E15.6). Not seeded on purpose.');
 	log(`  • ${unconfirmed.length} FAQ answers (E15.8):`);
 	for (const faq of unconfirmed) {
 		log(`      - ${faq.question}`);
@@ -268,6 +285,15 @@ async function main() {
 	);
 	log('');
 
+	// `process.exit` abandons anything still queued on stdout. Node only
+	// guarantees a synchronous write when stdout is a TTY, and `payload run`
+	// executes this in a child process with a pipe — so exiting here threw away
+	// the entire report above and the run looked like it had done nothing.
+	// Closing Payload first also lets the pool drain instead of being severed.
+	await payload.destroy?.();
+	await new Promise<void>((resolve) => {
+		process.stdout.write('', () => resolve());
+	});
 	process.exit(0);
 }
 
