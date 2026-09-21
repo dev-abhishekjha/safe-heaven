@@ -181,7 +181,8 @@ async function main() {
 				name: room.name,
 				slug: room.key,
 				property: property.id,
-				occupancy: room.occupancy,
+				// The CMS field is a number 1–6; `room.occupancy` is its wording.
+				occupancy: room.occupancyCount,
 				availability: room.availability,
 				summary: room.longBody,
 				furnishings: room.inclusions.map((item) => ({ item })),
@@ -228,8 +229,10 @@ async function main() {
 				title: point.title,
 				body: point.body,
 			})),
+			// No `iconKey` here: the CMS row has only a title and a body, and
+			// pageContentService supplies the icon from BOOKING_STEPS by index.
+			// Payload drops unknown fields silently, so writing one looked fine.
 			howItWorks: BOOKING_STEPS.map((step) => ({
-				iconKey: step.icon,
 				title: step.title,
 				body: step.body,
 			})),
@@ -322,5 +325,12 @@ try {
 	process.stderr.write(
 		`Seed failed: ${error instanceof Error ? error.message : String(error)}\n`,
 	);
+	// Payload's ValidationError says "The following field is invalid: Occupancy"
+	// and stops there — not which value, not which row, not why. The detail is
+	// on `error.data`, so print it rather than leaving the next person to guess.
+	const data = (error as { data?: unknown }).data;
+	if (data) {
+		process.stderr.write(`${JSON.stringify(data, null, 2)}\n`);
+	}
 	process.exit(1);
 }

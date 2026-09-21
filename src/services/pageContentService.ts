@@ -8,7 +8,12 @@ import {
 	NEARBY_ORDER,
 	type PlaceCategory,
 } from '@/content/places';
-import { RENT_INCLUSIONS, ROOMS, type SeedRoom } from '@/content/rooms';
+import {
+	RENT_INCLUSIONS,
+	ROOMS,
+	type SeedRoom,
+	occupancyLabel,
+} from '@/content/rooms';
 import {
 	getFaqs,
 	getFeaturedTestimonials,
@@ -102,17 +107,6 @@ const SEED_HERO = {
 		'Furnished single, double and triple rooms at Mitra Enclave, Sector P7 — a three-minute walk from Knowledge Park II Metro, with campuses, the market and the metro all inside a short ride.',
 };
 
-/** The CMS stores occupancy as a number; the site says it in words. */
-const OCCUPANCY_WORDS: Record<number, string> = {
-	1: 'One person',
-	2: 'Two people',
-	3: 'Three people',
-	4: 'Four people',
-};
-
-const occupancyLabel = (count: number) =>
-	OCCUPANCY_WORDS[count] ?? `${count} people`;
-
 /** CMS room rows carry no rent on the public side — the field is access-controlled. */
 function toSeedRooms(
 	rows: Awaited<ReturnType<typeof getRoomTypes>>,
@@ -122,6 +116,7 @@ function toSeedRooms(
 		return {
 			key: (row.slug as SeedRoom['key']) ?? 'double',
 			name: row.name,
+			occupancyCount: row.occupancy,
 			occupancy: occupancyLabel(row.occupancy),
 			shortBody: row.summary ?? seed?.shortBody ?? '',
 			longBody: row.summary ?? seed?.longBody ?? '',

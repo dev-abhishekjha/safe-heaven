@@ -1,4 +1,5 @@
 import { admins, anyone } from '@/payload/access';
+import { iconOptions } from '@/payload/fields/iconOptions';
 import type { Field, GlobalConfig } from 'payload';
 
 const pageAccess = { read: anyone, update: admins };
@@ -14,23 +15,7 @@ const iconKey = (): Field => ({
 	type: 'select',
 	required: true,
 	defaultValue: 'check',
-	options: [
-		'check',
-		'security',
-		'securityCheck',
-		'metro',
-		'pin',
-		'campus',
-		'wifi',
-		'power',
-		'water',
-		'housekeeping',
-		'inclusive',
-		'community',
-		'opportunity',
-		'chat',
-		'clock',
-	].map((value) => ({ label: value, value })),
+	options: iconOptions(),
 });
 
 /**

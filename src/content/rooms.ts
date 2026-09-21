@@ -20,6 +20,12 @@ export type RoomKey = 'single' | 'double' | 'triple';
 export type SeedRoom = {
 	key: RoomKey;
 	name: string;
+	/**
+	 * How many people share the room. This is the number the CMS stores and
+	 * the seed writes; `occupancy` is only ever its rendering.
+	 */
+	occupancyCount: number;
+	/** Derived from `occupancyCount` — never written by hand. */
 	occupancy: string;
 	/** One line, for cards. */
 	shortBody: string;
@@ -37,11 +43,33 @@ export type SeedRoom = {
 	icon: IconName;
 };
 
-export const ROOMS: SeedRoom[] = [
+/**
+ * How occupancy is said in words.
+ *
+ * The CMS stores occupancy as a number, the site says it in words, and the
+ * seed has to turn the words back into a number. Three places, so the map
+ * lives here and everything imports it — including `pageContentService`,
+ * which used to keep a second copy of it.
+ */
+const OCCUPANCY_WORDS: Record<number, string> = {
+	1: 'One person',
+	2: 'Two people',
+	3: 'Three people',
+	4: 'Four people',
+};
+
+export const occupancyLabel = (count: number): string =>
+	OCCUPANCY_WORDS[count] ?? `${count} people`;
+
+/**
+ * `occupancy` is derived rather than typed out, so the words and the number
+ * cannot disagree. Everything else is literal.
+ */
+const ROOM_SEED: Omit<SeedRoom, 'occupancy'>[] = [
 	{
 		key: 'single',
 		name: 'Single room',
-		occupancy: 'One person',
+		occupancyCount: 1,
 		shortBody:
 			'Your own room and your own door. The quietest option, and the one that goes first.',
 		longBody:
@@ -57,7 +85,7 @@ export const ROOMS: SeedRoom[] = [
 	{
 		key: 'double',
 		name: 'Double sharing',
-		occupancy: 'Two people',
+		occupancyCount: 2,
 		shortBody:
 			'Two beds, two desks, one room. The middle ground most residents pick.',
 		longBody:
@@ -77,7 +105,7 @@ export const ROOMS: SeedRoom[] = [
 	{
 		key: 'triple',
 		name: 'Triple sharing',
-		occupancy: 'Three people',
+		occupancyCount: 3,
 		shortBody:
 			'The most economical room, and the easiest way to land somewhere you already know people.',
 		longBody:
@@ -95,6 +123,11 @@ export const ROOMS: SeedRoom[] = [
 		icon: 'campus',
 	},
 ];
+
+export const ROOMS: SeedRoom[] = ROOM_SEED.map((room) => ({
+	...room,
+	occupancy: occupancyLabel(room.occupancyCount),
+}));
 
 export const getRoom = (key: RoomKey): SeedRoom => {
 	const room = ROOMS.find((candidate) => candidate.key === key);

@@ -1,4 +1,5 @@
 import { admins, anyone } from '@/payload/access';
+import { iconOptions } from '@/payload/fields/iconOptions';
 import type { CollectionConfig } from 'payload';
 
 /**
@@ -52,22 +53,7 @@ export const Amenities: CollectionConfig = {
 			admin: {
 				description: 'Which icon to draw. Names match the site’s icon set.',
 			},
-			options: [
-				'check',
-				'wifi',
-				'power',
-				'water',
-				'housekeeping',
-				'security',
-				'securityCheck',
-				'inclusive',
-				'community',
-				'metro',
-				'campus',
-				'hospital',
-				'shopping',
-				'clock',
-			].map((value) => ({ label: value, value })),
+			options: iconOptions(),
 		},
 		{
 			name: 'displayOrder',
