@@ -362,7 +362,9 @@ Not code. Blocks launch harder than anything above.
 | `[!]` | **E16.8** Admin handover guide | Add a room, upload photos, mark sold out, read leads |
 | `[!]` | **E16.9** Supabase backup schedule | |
 | `[!]` | **E16.10** Uptime monitor | Also catches the free-tier project pausing |
-| `[x]` | **E16.11** Decide the production pooler mode | **Settled the hard way.** Session pooler (5432) on Vercel fails: it holds a connection per client, Vercel runs many instances at once, the free tier runs out, and every query dies with `timeout exceeded when trying to connect`. Production uses the TRANSACTION pooler (6543) via `DATABASE_URI`; migrations use the session pooler via `DATABASE_DIRECT_URI`. The audit's `prepare: false` warning still does not apply — the adapter is node-postgres, not postgres.js |
+| `[~]` | **E16.11** Decide the production pooler mode | Production uses the TRANSACTION pooler (6543) via `DATABASE_URI`; migrations use the session pooler via `DATABASE_DIRECT_URI`. That split is right for serverless on its own merits. **The reason first recorded here was wrong** and is corrected in E16.12: session-pooler exhaustion was a guess, and the evidence since has disproved it. The audit's `prepare: false` warning still does not apply — the adapter is node-postgres, not postgres.js |
+| `[!]` | **E16.12** Vercel cannot reach Postgres | **Open, and it blocks launch.** Every query from Vercel — build and runtime, read and write — fails with pg-pool's `timeout exceeded when trying to connect`. Reads degrade to seed content so pages still return 200; writes have no fallback, so **enquiries submitted in production are lost**. Ruled out by evidence rather than reasoning: the database is healthy (16 of 60 connections in use, none belonging to the app), ap-south-1 is operational, network restrictions allow all IPs, and both poolers accept a real Postgres login from a laptop in under half a second (5432 in 446ms, 6543 in 327ms). Wrong credentials would give `28P01`; a wrong host would give `ENOTFOUND` or `EAI_AGAIN`. A single sequential query during `migrate` also timed out, which rules out pool starvation. The one thing never measured is the environment where it fails, so `GET /diag` was added to measure it from inside |
+| `[!]` | **E16.13** Delete the `/diag` route | Temporary. Remove the route, `DIAG_TOKEN` from Vercel, and the entry in `.env.example` once E16.12 is closed |
 
 ---
 
@@ -421,7 +423,7 @@ Reviewed 2026-09-16 against an external stack audit. What was taken, and what wa
 
 | Decision | Verdict | Why |
 | --- | --- | --- |
-| Supabase connection pooling | **Adopted** — E16.11 | Correct concern. Already on the session pooler; the transaction-pooler route carries a prepared-statement caveat the audit didn't mention |
+| Supabase connection pooling | **Adopted** — E16.11 | Correct concern. Production is on the transaction pooler, migrations on the session pooler. The prepared-statement caveat usually attached to the transaction pooler does not apply here: the adapter is node-postgres |
 | Supabase S3 config specifics | **Adopted** — E4.2a | `forcePathStyle: true` in particular |
 | Radix Dialog + Accordion | **Adopted** — E1.16 | Suggested for the wrong reason (a date picker we don't need) but right for the modal and the accordion |
 | Internal price field | **Adopted** — E3.3a | Staff can see rent in `/admin`; the site still shows none |
