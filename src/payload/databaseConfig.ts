@@ -33,8 +33,28 @@ export type PoolConfig = {
 	connectionTimeoutMillis?: number;
 };
 
+/**
+ * Migrations and the running app want different connections.
+ *
+ * On a serverless host the app should use Supabase's TRANSACTION pooler
+ * (6543), which lends a connection per transaction. Migrations should not:
+ * they issue DDL and hold state across statements, which is what the SESSION
+ * pooler (5432) and a direct connection are for.
+ *
+ * `build:deploy` runs migrations and the build in one command with one set of
+ * environment variables, so the choice has to be made here rather than by the
+ * host. Set `DATABASE_DIRECT_URI` to the session-pooler URL and migrations use
+ * it; leave it unset and everything uses `DATABASE_URI`, which is the right
+ * default locally and for anyone not on the transaction pooler.
+ */
+function isMigrationRun(): boolean {
+	return process.argv.some((arg) => arg.includes('migrate'));
+}
+
 export function buildPoolConfig(
-	uri = process.env.DATABASE_URI || '',
+	uri = (isMigrationRun() && process.env.DATABASE_DIRECT_URI) ||
+		process.env.DATABASE_URI ||
+		'',
 	explicitPassword = process.env.DATABASE_PASSWORD || '',
 ): PoolConfig {
 	if (!uri) {
@@ -92,7 +112,7 @@ export function buildPoolConfig(
 		 * Locally the opposite is true: one long-lived dev server, so a slightly
 		 * larger pool avoids serialising every request behind one connection.
 		 */
-		max: process.env.NODE_ENV === 'production' ? 1 : 5,
+		max: process.env.NODE_ENV === 'production' && !isMigrationRun() ? 1 : 5,
 		idleTimeoutMillis: 10_000,
 		connectionTimeoutMillis: 15_000,
 	};

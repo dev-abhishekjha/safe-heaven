@@ -1,7 +1,11 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import {
+	type MigrateDownArgs,
+	type MigrateUpArgs,
+	sql,
+} from '@payloadcms/db-postgres';
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
-  await db.execute(sql`
+	await db.execute(sql`
    CREATE TYPE "public"."enum_room_types_availability" AS ENUM('available', 'limited', 'unavailable');
   CREATE TYPE "public"."enum_amenities_category" AS ENUM('room', 'building', 'services', 'safety');
   CREATE TYPE "public"."enum_amenities_icon_key" AS ENUM('check', 'wifi', 'power', 'water', 'housekeeping', 'security', 'securityCheck', 'inclusive', 'community', 'metro', 'campus', 'hospital', 'shopping', 'clock');
@@ -530,11 +534,15 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "community_page_what_gets_shared_order_idx" ON "community_page_what_gets_shared" USING btree ("_order");
   CREATE INDEX "community_page_what_gets_shared_parent_id_idx" ON "community_page_what_gets_shared" USING btree ("_parent_id");
   CREATE INDEX "community_page_ground_rules_order_idx" ON "community_page_ground_rules" USING btree ("_order");
-  CREATE INDEX "community_page_ground_rules_parent_id_idx" ON "community_page_ground_rules" USING btree ("_parent_id");`)
+  CREATE INDEX "community_page_ground_rules_parent_id_idx" ON "community_page_ground_rules" USING btree ("_parent_id");`);
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
-  await db.execute(sql`
+export async function down({
+	db,
+	payload,
+	req,
+}: MigrateDownArgs): Promise<void> {
+	await db.execute(sql`
    DROP TABLE "properties_gallery" CASCADE;
   DROP TABLE "properties" CASCADE;
   DROP TABLE "properties_rels" CASCADE;
@@ -583,5 +591,5 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_home_page_trust_points_icon_key";
   DROP TYPE "public"."enum_home_page_why_points_icon_key";
   DROP TYPE "public"."enum_about_page_values_icon_key";
-  DROP TYPE "public"."enum_community_page_what_gets_shared_icon_key";`)
+  DROP TYPE "public"."enum_community_page_what_gets_shared_icon_key";`);
 }
