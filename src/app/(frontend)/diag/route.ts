@@ -21,6 +21,7 @@
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { promises as dns } from 'node:dns';
 import net from 'node:net';
+import { buildPoolConfig } from '@/payload/databaseConfig';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -212,6 +213,128 @@ function uriPassword(): string {
 	}
 }
 
+/**
+ * The app does not use `new Client`. It hands `buildPoolConfig()` to Payload,
+ * which hands it to `pg.Pool`, and it is `pg.Pool` that raises "timeout
+ * exceeded when trying to connect". A bare Client succeeding proves the
+ * network is fine; it does not prove the pool is. This runs the real config
+ * through the real Pool, including a transaction, which is the shape of a
+ * write and the thing an enquiry actually needs.
+ */
+async function poolCheck(): Promise<Json> {
+	const started = Date.now();
+	let config: ReturnType<typeof buildPoolConfig>;
+	try {
+		config = buildPoolConfig();
+	} catch (error) {
+		return { ok: false, stage: 'buildPoolConfig', ...errorShape(error) };
+	}
+	const resolved = {
+		host: config.host,
+		port: config.port,
+		user: config.user,
+		database: config.database,
+		max: config.max,
+		connectionTimeoutMillis: config.connectionTimeoutMillis,
+		idleTimeoutMillis: config.idleTimeoutMillis,
+		ssl: config.ssl,
+		passwordLength: config.password.length,
+		passwordFingerprint: fingerprint(config.password),
+	};
+
+	const { Pool } = await import('pg');
+	const pool = new Pool(config);
+	const timings: Json = {};
+	try {
+		const t0 = Date.now();
+		const client = await pool.connect();
+		timings.connectMs = Date.now() - t0;
+		try {
+			const t1 = Date.now();
+			await client.query('select 1');
+			timings.selectMs = Date.now() - t1;
+
+			// A transaction, because that is what a write does.
+			const t2 = Date.now();
+			await client.query('begin');
+			await client.query('create temp table diag_probe (x int) on commit drop');
+			await client.query('insert into diag_probe values (1)');
+			const counted = await client.query(
+				'select count(*)::int as n from diag_probe',
+			);
+			await client.query('rollback');
+			timings.transactionMs = Date.now() - t2;
+			timings.rowsInProbe = counted.rows[0]?.n;
+		} finally {
+			client.release();
+		}
+
+		// Concurrency, because getHomeContent fires four queries at once.
+		const t3 = Date.now();
+		await Promise.all(
+			Array.from({ length: 4 }, () => pool.query('select pg_backend_pid()')),
+		);
+		timings.fourConcurrentMs = Date.now() - t3;
+
+		return { ok: true, resolved, timings, ms: Date.now() - started };
+	} catch (error) {
+		return {
+			ok: false,
+			resolved,
+			timings,
+			ms: Date.now() - started,
+			...errorShape(error),
+		};
+	} finally {
+		await pool.end().catch(() => undefined);
+	}
+}
+
+/**
+ * The whole stack: Payload init (which builds its own pool from the same
+ * config), a real read through the Local API, and a transaction opened and
+ * rolled back the way a lead insert would open one. No data is written.
+ */
+async function payloadCheck(): Promise<Json> {
+	const started = Date.now();
+	const stages: Json = {};
+	try {
+		const { getPayloadClient } = await import('@/repositories/payloadClient');
+		const t0 = Date.now();
+		const payload = await getPayloadClient();
+		stages.initMs = Date.now() - t0;
+
+		const t1 = Date.now();
+		const rooms = await payload.find({
+			collection: 'room-types',
+			limit: 1,
+			depth: 0,
+		});
+		stages.findMs = Date.now() - t1;
+		stages.roomTypesTotal = rooms.totalDocs;
+
+		const t2 = Date.now();
+		const leads = await payload.count({ collection: 'leads' });
+		stages.countMs = Date.now() - t2;
+		stages.leadsTotal = leads.totalDocs;
+
+		const t3 = Date.now();
+		const transaction = await payload.db.beginTransaction?.();
+		if (transaction) await payload.db.rollbackTransaction?.(transaction);
+		stages.transactionMs = Date.now() - t3;
+		stages.transactionOpened = Boolean(transaction);
+
+		return { ok: true, stages, ms: Date.now() - started };
+	} catch (error) {
+		return {
+			ok: false,
+			stages,
+			ms: Date.now() - started,
+			...errorShape(error),
+		};
+	}
+}
+
 export async function GET(request: Request): Promise<Response> {
 	if (!authorised(request)) {
 		// 404 rather than 401: an unconfigured or wrongly-called diagnostic should
@@ -271,6 +394,11 @@ export async function GET(request: Request): Promise<Response> {
 		]),
 	]);
 
+	// Sequential and last: these are the checks that matter most, and running
+	// them alongside the others would muddy their timings.
+	const pool = await poolCheck();
+	const payload = await payloadCheck();
+
 	return Response.json(
 		{
 			generatedAt: new Date().toISOString(),
@@ -299,6 +427,8 @@ export async function GET(request: Request): Promise<Response> {
 				'api.github.com:443': egress[0],
 				'supabase.com:443': egress[1],
 			},
+			pool,
+			payload,
 		},
 		{ headers: { 'cache-control': 'no-store' } },
 	);
