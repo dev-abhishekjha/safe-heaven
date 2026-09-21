@@ -169,14 +169,14 @@ The conversion path. Highest business value after E3.
 | | Task | Notes |
 | --- | --- | --- |
 | `[~]` | **E5.1** zod schema shared client + server | Name + phone required; everything else optional |
-| `[~]` | **E5.2** `EnquiryForm` component | Name, phone, email, room type chips, move-in month, message |
-| `[~]` | **E5.3** Desktop dialog variant | Two-column: reasons left, form right |
+| `[x]` | **E5.2** `EnquiryForm` component | Name, phone, email, room type chips, move-in month, message. Submitted end to end on the live site |
+| `[x]` | **E5.3** Desktop dialog variant | Two-column: reasons left, form right. Success state confirmed on the live site — it echoes the name and the number it will call |
 | `[~]` | **E5.4** Mobile bottom-sheet variant | |
 | `[~]` | **E5.5** Global open state | Context provider, opened from every CTA |
 | `[~]` | **E5.6** Pre-fill from context | Room type from the Property page card you clicked |
 | `[~]` | **E5.7** Auto-open rules | Delay after arrival + exit intent, **once per visitor**, remembered in localStorage |
-| `[~]` | **E5.8** Server action → write `leads` row | |
-| `[~]` | **E5.9** Resend notification to the team | `LEAD_NOTIFY_EMAIL` |
+| `[x]` | **E5.8** Server action → write `leads` row | **Verified in production 2026-09-21.** A submission on the live site took `leads` from 0 to 1 |
+| `[!]` | **E5.9** Resend notification to the team | **Wired but dead in production.** No `RESEND_*` variable and no `LEAD_NOTIFY_EMAIL` exist on Vercel, so the lead saved on 2026-09-21 notified nobody. Blocked on E16.15 |
 | `[~]` | **E5.10** In-modal success state | Echoes what they asked for. No redirect |
 | `[~]` | **E5.11** Applicant confirmation email | **Env-gated** — dead until a domain is verified in Resend |
 | `[~]` | **E5.12** Honeypot field | |
@@ -368,7 +368,9 @@ Not code. Blocks launch harder than anything above.
 | `[!]` | **E16.14** Restore `build:deploy` as the Vercel build command | Lowered to `npm run build` so a deployment could ship while migrations could not connect. That means **no deployment runs migrations right now** — a future schema change would ship against an unmigrated database. The migrate step runs in Vercel's BUILD container, whose network is not the one `/diag` just measured, so putting it back is also the test of whether that path works |
 | `[!]` | **E16.15** Add the Resend variables to Vercel | `/diag` reported no environment variable beginning with `RESEND`, and `LEAD_NOTIFY_EMAIL` is absent too. Enquiries can now be saved, but **nobody is told one arrived** |
 | `[!]` | **E16.16** Seed the production CMS | `/diag` reported `room-types: 0` and `leads: 0`. Every page is serving its hard-coded fallback, so the CMS is empty and nothing is editable from `/admin`. `npm run seed` against the production connection fills everything it can honestly fill — it deliberately skips the About origin story and the unconfirmed FAQ answers (E15.6) |
-| `[!]` | **E16.17** Confirm a real enquiry is stored | `leads: 0` confirms every enquiry submitted so far was lost. One submission on the live site, then `leads` reading 1, closes the pipeline and 14 of the user-verifiable rows with it |
+| `[x]` | **E16.17** Confirm a real enquiry is stored | **Done 2026-09-21.** `leads` went 0 → 1 after one submission on the live site. The write path, the transaction and the success state are all confirmed. What this did NOT prove: the notification email (E5.9, no Resend variables on Vercel), the honeypot (E5.12), the contact form (E10.2), or that the row is readable in `/admin` (E16.18) |
+| `[!]` | **E16.18** Log in to `/admin` in production | Never done. There is a lead in the database that nobody has confirmed is readable, and Payload's first-user flow may not have been run against this project. If it has not, `/admin` will offer to create the first account — do that before the site is public, because that screen is open to whoever reaches it first |
+| `[x]` | **E16.19** One source for the contact number | `SiteConfig.ts` called itself the single source, but `leadService.ts` and `emailClient.ts` had the number typed into three user-facing strings and the address into a fourth. E15.11 says both change later, so those four would have gone stale silently on the day they did. They now read `CONTACT` and `ADDRESS`. Generated migrations are excluded from Biome for the same reason `payload-types.ts` already is |
 
 ---
 

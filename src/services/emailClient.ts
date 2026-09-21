@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { debugWarn } from '@/utils/Logger';
+import { ADDRESS, CONTACT } from '@/utils/SiteConfig';
 import { Resend } from 'resend';
 
 /**
@@ -102,9 +103,9 @@ export async function sendEnquiryConfirmation(
 			'',
 			'Thanks for getting in touch. Someone from Safe Heaven will call you within 24 hours with rent and availability.',
 			'',
-			'In a hurry? Call +91 82734 58926 or message us on WhatsApp.',
+			`In a hurry? Call ${CONTACT.phoneDisplay} or message us on WhatsApp.`,
 			'',
-			'Mitra Enclave, Sector P7, Near Pari Chowk, Greater Noida',
+			`${ADDRESS.line1}, ${ADDRESS.line2}`,
 		].join('\n'),
 	});
 }

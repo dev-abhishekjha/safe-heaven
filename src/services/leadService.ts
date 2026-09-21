@@ -7,6 +7,7 @@ import {
 } from '@/services/emailClient';
 import { check as checkRateLimit } from '@/services/rateLimiter';
 import { debugError } from '@/utils/Logger';
+import { CONTACT } from '@/utils/SiteConfig';
 import {
 	type SubmitResult,
 	contactSchema,
@@ -50,7 +51,7 @@ async function handle(
 		if (!limit.allowed) {
 			return {
 				ok: false,
-				error: `That is a lot of enquiries in a short time. Try again in a few minutes, or just call +91 82734 58926 — that is faster anyway.`,
+				error: `That is a lot of enquiries in a short time. Try again in a few minutes, or just call ${CONTACT.phoneDisplay} — that is faster anyway.`,
 			};
 		}
 	}
@@ -81,8 +82,7 @@ async function handle(
 		debugError('[lead] could not be saved:', error);
 		return {
 			ok: false,
-			error:
-				'Something went wrong on our side. Please call +91 82734 58926 or message us on WhatsApp.',
+			error: `Something went wrong on our side. Please call ${CONTACT.phoneDisplay} or message us on WhatsApp.`,
 		};
 	}
 
