@@ -38,8 +38,18 @@ export function buildPoolConfig(
 	explicitPassword = process.env.DATABASE_PASSWORD || '',
 ): PoolConfig {
 	if (!uri) {
+		// Next surfaces this as "Failed to collect page data for /api/[...slug]",
+		// which points nowhere near the cause, so the message has to carry the
+		// whole diagnosis itself — including where to look on a host.
 		throw new Error(
-			'DATABASE_URI is not set. Copy .env.example to .env.local and fill it in.',
+			[
+				'DATABASE_URI is not set, so Payload cannot start and the build cannot collect page data.',
+				'',
+				'Locally:  copy .env.example to .env.local and fill it in.',
+				'On Vercel: Project Settings -> Environment Variables. Set DATABASE_URI,',
+				'           DATABASE_PASSWORD and PAYLOAD_SECRET for the Production environment',
+				'           (and Preview, if you deploy branches), then redeploy.',
+			].join('\n'),
 		);
 	}
 
