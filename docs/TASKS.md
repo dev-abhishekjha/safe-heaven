@@ -429,6 +429,7 @@ Reviewed 2026-09-16 against an external stack audit. What was taken, and what wa
 
 | Decision | Verdict | Why |
 | --- | --- | --- |
+| `payload run` and floating promises | **Trap** — `scripts/seed.ts` | `payload/dist/bin/index.js` does `await import(script)` and then `process.exit(0)` unconditionally. A script whose top level ends in `main().catch(...)` finishes evaluating the moment `main` is called, so the import resolves and the process is killed before the first await returns. Exit status 0, no output, nothing written — indistinguishable from a clean run with nothing to report. A `payload run` script must use TOP-LEVEL AWAIT |
 | Supabase connection pooling | **Adopted** — E16.11 | Correct concern. Production is on the transaction pooler, migrations on the session pooler. The prepared-statement caveat usually attached to the transaction pooler does not apply here: the adapter is node-postgres |
 | Supabase S3 config specifics | **Adopted** — E4.2a | `forcePathStyle: true` in particular |
 | Radix Dialog + Accordion | **Adopted** — E1.16 | Suggested for the wrong reason (a date picker we don't need) but right for the modal and the accordion |

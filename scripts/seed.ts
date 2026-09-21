@@ -297,9 +297,30 @@ async function main() {
 	process.exit(0);
 }
 
-main().catch((error) => {
+/**
+ * TOP-LEVEL AWAIT, NOT `main().catch()`. This is load-bearing.
+ *
+ * `payload run` does, in payload/dist/bin/index.js:
+ *
+ *     const { payload } = await runBinScript({ args, script })  // -> await import(script)
+ *     if (payload) { await payload.destroy() }
+ *     process.exit(0)
+ *
+ * A floating `main()` lets module evaluation finish immediately, so the
+ * dynamic import resolves, and `process.exit(0)` kills the process before the
+ * first await inside main has come back. The run ends with status 0, no
+ * output, and nothing written — which is precisely what happened twice, and
+ * looks identical to a script that ran perfectly and had nothing to say.
+ *
+ * Awaiting at the top level keeps the module's evaluation pending until the
+ * work is done, so the import cannot resolve early and the exit cannot
+ * happen early.
+ */
+try {
+	await main();
+} catch (error) {
 	process.stderr.write(
 		`Seed failed: ${error instanceof Error ? error.message : String(error)}\n`,
 	);
 	process.exit(1);
-});
+}
