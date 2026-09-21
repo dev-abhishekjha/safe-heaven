@@ -100,19 +100,23 @@ export function buildPoolConfig(
 		// chain to a public root, which is standard for their managed pooler.
 		ssl: { rejectUnauthorized: false },
 		/**
-		 * Serverless sizing.
+		 * Pool sizing.
 		 *
-		 * Each Vercel function instance gets its own pool, and there can be many
-		 * instances at once. A default-sized pool per instance exhausts the
-		 * database's connection limit under very ordinary traffic, and the
-		 * failure looks like random timeouts rather than anything obvious.
-		 * One connection per instance, handed back quickly, is the shape that
-		 * works — the pooler in front is what does the actual pooling.
+		 * This is NOT "one connection per serverless instance". That advice is for
+		 * connecting straight to Postgres with no pooler, and it is wrong here in a
+		 * way that fails silently until load: a single request runs several queries
+		 * concurrently — `getHomeContent` alone fires four through `Promise.all` —
+		 * and a write opens a transaction that needs a connection of its own. With
+		 * `max: 1` those callers queue against each other, wait out
+		 * `connectionTimeoutMillis`, and fail with pg-pool's
+		 * "timeout exceeded when trying to connect", which reads like a network
+		 * problem and is not one.
 		 *
-		 * Locally the opposite is true: one long-lived dev server, so a slightly
-		 * larger pool avoids serialising every request behind one connection.
+		 * The pooler in front handles fan-out ACROSS instances. This number only has
+		 * to cover concurrency WITHIN one request, with headroom.
 		 */
-		max: process.env.NODE_ENV === 'production' && !isMigrationRun() ? 1 : 5,
+		// Migrations are one sequential process and need only one.
+		max: isMigrationRun() ? 1 : 10,
 		idleTimeoutMillis: 10_000,
 		connectionTimeoutMillis: 15_000,
 	};
