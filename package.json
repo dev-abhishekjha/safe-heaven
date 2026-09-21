@@ -15,6 +15,7 @@
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts",
     "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",
     "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
     "build:deploy": "npm run migrate && next build"
   },

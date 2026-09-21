@@ -115,8 +115,25 @@ export function buildPoolConfig(
 		 * The pooler in front handles fan-out ACROSS instances. This number only has
 		 * to cover concurrency WITHIN one request, with headroom.
 		 */
-		// Migrations are one sequential process and need only one.
-		max: isMigrationRun() ? 1 : 10,
+		/**
+		 * Migrations are NOT one connection's worth of work, which is what this
+		 * said before and why `payload migrate` died with the same
+		 * "timeout exceeded when trying to connect" as everything else — on a
+		 * laptop that could reach the database perfectly well, seconds before a
+		 * seed run succeeded against it.
+		 *
+		 * `payload migrate` initialises Payload first, and that init does its own
+		 * database work; the migration runner then asks for a connection of its
+		 * own to check for `payload_migrations`. With `max: 1` the second caller
+		 * queues behind the first, waits out connectionTimeoutMillis and fails.
+		 *
+		 * The error says nothing about queueing, and its stack points at
+		 * pg-pool/index.js:45 — which is `Error.captureStackTrace` inside
+		 * `promisify`, the line that REPLACES the stack. Every pool connect error
+		 * reports it, so it distinguishes nothing. Reading it as evidence of
+		 * where the failure came from is what kept this hidden.
+		 */
+		max: isMigrationRun() ? 5 : 10,
 		idleTimeoutMillis: 10_000,
 		connectionTimeoutMillis: 15_000,
 	};

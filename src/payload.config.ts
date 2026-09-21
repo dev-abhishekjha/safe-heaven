@@ -101,7 +101,24 @@ export default buildConfig({
 		 * unreviewed ALTER against live data is how a column of enquiries
 		 * disappears. Production runs migrations instead.
 		 */
-		push: process.env.NODE_ENV !== 'production',
+		/**
+		 * Schema push is OPT-IN, not on by default in development.
+		 *
+		 * Payload's default is to push whenever NODE_ENV is not `production`,
+		 * which assumes a local database you can throw away. This project has no
+		 * such thing: `.env.local` points at the same Supabase project the live
+		 * site uses, so a push from a laptop rewrites production's schema.
+		 *
+		 * It already did. `npm run migrate` failed, `npm run seed` ran seconds
+		 * later, and its init quietly applied the pending enum change and left
+		 * `payload_migrations` out of step with it — a `batch: -1` marker rather
+		 * than the migration, which is the state that hung a Vercel build for
+		 * fifteen minutes.
+		 *
+		 * Set PAYLOAD_DB_PUSH=true for a throwaway database. Everywhere else,
+		 * schema changes go through migrate:create and migrate.
+		 */
+		push: process.env.PAYLOAD_DB_PUSH === 'true',
 	}),
 	// Image resizing for uploads
 	sharp,
