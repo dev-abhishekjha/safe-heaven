@@ -203,7 +203,7 @@ async function main() {
 	}
 	log(`✓ ${confirmed.length} FAQs (confirmed answers only)`);
 
-	// ------------------------------------------------------------- home global
+	// ------------------------------------------------------------- home globall
 	await payload.updateGlobal({
 		slug: 'home-page',
 		data: {
