@@ -7,7 +7,7 @@ import type { ReactNode } from 'react';
  * form. Height clears the 44px touch minimum.
  */
 export const CONTROL_CLASSES = cn(
-	'w-full min-h-12 rounded-field border border-line bg-surface',
+	'w-full min-h-12 rounded-field border border-field-line bg-surface',
 	'px-4 py-3 text-sm text-ink placeholder:text-label',
 	'transition-colors outline-none',
 	'focus:border-accent focus:ring-4 focus:ring-accent/10',

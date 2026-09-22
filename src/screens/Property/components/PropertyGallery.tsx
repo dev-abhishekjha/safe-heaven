@@ -110,7 +110,17 @@ export function PropertyGallery({ items }: PropertyGalleryProps) {
 							/>
 						</div>
 
-						<p className="text-center text-sm text-white">
+						{/*
+						 * A live region, because Radix announces Dialog.Title when the
+						 * lightbox opens and never again. Without this, pressing the
+						 * arrow keys changes the photo and a screen reader says nothing
+						 * at all — the one interaction this component exists for.
+						 */}
+						<p
+							aria-live="polite"
+							aria-atomic="true"
+							className="text-center text-sm text-white"
+						>
 							{current?.label}
 							{index === null ? null : (
 								<span className="ml-2 text-white/60">

@@ -311,13 +311,13 @@ The conversion path. Highest business value after E3.
 | --- | --- | --- |
 | `[ ]` | **E14.1** `next/image` everywhere, correct `sizes` | |
 | `[ ]` | **E14.2** Lazy-load galleries and the map | |
-| `[ ]` | **E14.3** Font preload, `display: swap` | Already self-hosted |
+| `[x]` | **E14.3** Font preload, `display: swap` | Self-hosted via `next/font/local` with `display: swap`; next/font emits the preload. No request reaches Google from the build or the browser |
 | `[ ]` | **E14.4** Lighthouse mobile ≥ 90 | Most of your traffic is phones |
 | `[ ]` | **E14.5** CLS audit | Hero and gallery are the usual culprits |
-| `[ ]` | **E14.6** Keyboard nav + visible focus | Popup, drawer, accordion, lightbox |
-| `[ ]` | **E14.7** Contrast audit | **Measured: white on `--color-action` #f97316 is 2.80:1 — fails WCAG AA (needs 4.5:1).** Every primary button on the site is affected. #ea580c is 3.56:1, #c2410c is 5.18:1. The admin panel already uses #c2410c; the site needs a decision — darken the action colour, or use dark text on orange. Slate-400 labels still to check |
-| `[ ]` | **E14.8** Screen-reader labels on icon-only buttons | |
-| `[ ]` | **E14.9** `prefers-reduced-motion` | |
+| `[~]` | **E14.6** Keyboard nav + visible focus | Audited in code and sound: global `:focus-visible` at 5.93:1, a skip link as the first tab stop, Radix handling the focus trap, focus restore, scroll lock and Escape for the drawer, the enquiry modal and the lightbox. One real gap fixed — stepping through the lightbox with the arrow keys changed the photo silently, since Radix announces `Dialog.Title` on open and never again; the caption is now an `aria-live` region. Still `[~]` because none of this has been driven by an actual keyboard and screen reader (E7.7) |
+| `[x]` | **E14.7** Contrast audit | **Done 2026-09-22, and now enforced.** `npm run check:contrast` measures every token pair that can appear on screen and fails the build below WCAG AA; it runs as part of `npm run lint`. Seven pairs were failing. Fixed: `--color-action` #f97316 → #c2410c (2.80 → 5.18), hover → #9a3412, chat green → #15803d (3.30 → 5.02), accent → #0369a1 (4.10 → 5.93), and the neutral scale moved one step darker so `--color-label` went 2.56 → 4.76 without collapsing into muted. Added `--color-field-line` at 4.76:1, because a text input's border is the only thing identifying the control and `--color-line` is 1.23:1. Divider and disabled pairs are reported but not enforced — 1.4.11 and 1.4.3 exempt them |
+| `[x]` | **E14.8** Screen-reader labels on icon-only buttons | Audited: every icon-only control already had one — the chat button, both nav toggles, the action bar, the modal close, the lightbox close and arrows. One real defect found instead: `aria-hidden` passed to `<Icon>` at ~15 call sites was silently discarded, because TypeScript does not type-check hyphenated JSX attributes and `Icon` neither declared nor spread it. Behaviour was already correct by default, but the call sites looked like accessibility work that never reached the DOM. Now declared |
+| `[x]` | **E14.9** `prefers-reduced-motion` | Already in `globals.css` — animations, transitions and smooth scrolling all collapse under the media query |
 | `[~]` | **E14.10** `not-found`, `loading`, `error` boundaries | |
 | `[ ]` | **E14.11** Cross-browser check | Chrome, Safari, Edge, Firefox — latest 2 |
 

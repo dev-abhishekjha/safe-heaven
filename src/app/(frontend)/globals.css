@@ -13,25 +13,37 @@
 
 @theme {
 	/* ── Action — the single call-to-action colour ─────────────────── */
-	--color-action: #f97316;
-	--color-action-hover: #ea580c;
-	--color-action-ink: #c2410c;
+	/* Was #f97316, which is 2.80:1 against white — every primary button on
+	   the site failed WCAG AA. Measured by scripts/check-contrast.mjs. */
+	--color-action: #c2410c; /* 5.18:1 with white */
+	--color-action-hover: #9a3412; /* 7.31:1 with white */
+	--color-action-ink: #9a3412; /* 6.88:1 on --color-action-tint */
 	--color-action-tint: #fff7ed;
+	--color-action-tint-strong: #ffedd5;
 
 	/* ── Accent — sky, demoted to tints, icons and links ───────────── */
-	--color-accent: #0284c7;
-	--color-accent-hover: #0369a1;
+	/* #0284c7 was 4.10:1 on white — under AA for body text and links. */
+	--color-accent: #0369a1; /* 5.93:1 with white */
+	--color-accent-hover: #075985;
 	--color-accent-tint: #f0f9ff;
 	--color-accent-tint-strong: #e0f2fe;
 	--color-accent-line: #7dd3fc;
 
 	/* ── Text and surface — slate ──────────────────────────────────── */
-	--color-ink: #0f172a;
-	--color-ink-soft: #334155;
-	--color-body: #475569;
-	--color-muted: #64748b;
-	--color-label: #94a3b8;
+	/* The whole scale moved one step darker. --color-label was #94a3b8 at
+	   2.56:1, and eyebrows and field labels are text. Shifting the scale
+	   rather than only the bottom rung keeps five distinct levels, all of
+	   which now pass, instead of collapsing label into muted. */
+	--color-ink: #0f172a; /* 17.85:1 */
+	--color-ink-soft: #1e293b; /* 14.63:1 */
+	--color-body: #334155; /* 10.35:1 */
+	--color-muted: #475569; /* 7.58:1 */
+	--color-label: #64748b; /* 4.76:1 */
+	/* Dividers and card edges — decorative, so 1.4.11 does not apply. */
 	--color-line: #e2e8f0;
+	/* A text input's border IS the affordance, so it does: 1.4.11 wants 3:1
+	   for a boundary that identifies a control. #e2e8f0 is 1.23:1. */
+	--color-field-line: #64748b; /* 4.76:1 */
 	--color-line-soft: #f1f5f9;
 	--color-surface: #ffffff;
 	--color-surface-alt: #f8fafc;
@@ -40,7 +52,8 @@
 	--color-surface-dark-line: #334155;
 
 	/* ── Chat — the WhatsApp green. Role-named, per AGENTS.md ──────── */
-	--color-chat: #16a34a;
+	--color-chat: #15803d; /* 5.02:1 with white; #16a34a was 3.30:1 */
+	--color-chat-hover: #166534;
 	--color-chat-tint: #f0fdf4;
 	--color-chat-line: #bbf7d0;
 

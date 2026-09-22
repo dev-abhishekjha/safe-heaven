@@ -22,8 +22,8 @@ const VARIANTS: Record<ButtonVariant, string> = {
 	primary: 'bg-action text-white shadow-sm hover:bg-action-hover',
 	secondary:
 		'border border-slate-300 bg-surface text-ink hover:border-slate-400 hover:bg-surface-alt',
-	tertiary: 'bg-action-tint text-action-ink hover:bg-orange-100',
-	chat: 'bg-chat text-white hover:bg-green-700',
+	tertiary: 'bg-action-tint text-action-ink hover:bg-action-tint-strong',
+	chat: 'bg-chat text-white hover:bg-chat-hover',
 	ghost: 'text-ink hover:bg-surface-alt',
 };
 

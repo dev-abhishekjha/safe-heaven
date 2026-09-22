@@ -153,9 +153,24 @@ type IconProps = {
 	 * labelling the control itself.
 	 */
 	label?: string;
+	/**
+	 * Declared because call sites pass it, and TypeScript does not type-check
+	 * JSX attributes containing a hyphen — so an `aria-hidden` on a component
+	 * that does not declare it is accepted and then silently dropped. The
+	 * default below is already `true` for an unlabelled icon, so passing it
+	 * changes nothing; not declaring it made ~15 call sites look like they
+	 * were doing accessibility work that never reached the DOM.
+	 */
+	'aria-hidden'?: boolean;
 };
 
-export function Icon({ name, size = 24, className, label }: IconProps) {
+export function Icon({
+	name,
+	size = 24,
+	className,
+	label,
+	'aria-hidden': ariaHidden,
+}: IconProps) {
 	return (
 		<svg
 			width={size}
@@ -169,7 +184,7 @@ export function Icon({ name, size = 24, className, label }: IconProps) {
 			className={cn('shrink-0', className)}
 			role={label ? 'img' : undefined}
 			aria-label={label}
-			aria-hidden={label ? undefined : true}
+			aria-hidden={ariaHidden ?? (label ? undefined : true)}
 		>
 			{PATHS[name]}
 		</svg>
