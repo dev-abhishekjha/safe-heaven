@@ -1,6 +1,7 @@
 'use client';
 
 import { Icon } from '@/components/ui/Icon';
+import { useReturnFocus } from '@/components/ui/useReturnFocus';
 import { cn } from '@/utils/UtilsClassName';
 import * as Dialog from '@radix-ui/react-dialog';
 import type { ReactNode } from 'react';
@@ -21,8 +22,10 @@ type ModalProps = {
  * reachable, with a grab handle; from `sm` up it is a centred dialog. Same
  * component, so the enquiry form is never built twice.
  *
- * Radix handles focus trapping, scroll lock, ESC, restoring focus on close and
- * the `aria-labelledby` wiring. A visually hidden title is still a title: a
+ * Radix handles focus trapping, scroll lock, ESC and the `aria-labelledby`
+ * wiring. It does NOT restore focus on close here: it restores to
+ * `Dialog.Trigger`, and this modal is opened from state rather than through
+ * one, so `useReturnFocus` does that part. A visually hidden title is still a title: a
  * dialog without one is unusable with a screen reader, so `title` is required.
  */
 export function Modal({
@@ -34,11 +37,14 @@ export function Modal({
 	hideTitle,
 	className,
 }: ModalProps) {
+	const onCloseAutoFocus = useReturnFocus(open);
+
 	return (
 		<Dialog.Root open={open} onOpenChange={onOpenChange}>
 			<Dialog.Portal>
 				<Dialog.Overlay className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-[2px]" />
 				<Dialog.Content
+					onCloseAutoFocus={onCloseAutoFocus}
 					className={cn(
 						'fixed z-50 flex flex-col bg-surface shadow-modal',
 						// phone: bottom sheet

@@ -2,6 +2,7 @@
 
 import { Icon } from '@/components/ui/Icon';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
+import { useReturnFocus } from '@/components/ui/useReturnFocus';
 import type { GalleryItem } from '@/screens/Property/propertyContent';
 import { cn } from '@/utils/UtilsClassName';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -15,7 +16,11 @@ type PropertyGalleryProps = {
  * The gallery, with a lightbox.
  *
  * Radix Dialog gives the parts that are tedious and easy to get wrong — focus
- * trap, focus restored to the thumbnail that opened it, scroll lock, Escape.
+ * trap, scroll lock, Escape. It does NOT give focus restoration here: it
+ * restores to `Dialog.Trigger`, and these thumbnails are plain buttons driving
+ * state, so closing the lightbox dropped focus on `<body>` until
+ * `useReturnFocus` was added. That was measured on the live site, not
+ * reasoned about — the comment here previously claimed the opposite.
  * What it does not give is moving between photos, so the arrow keys are
  * handled on the content element rather than on `window`: the listener then
  * exists exactly as long as the lightbox does, with nothing to clean up and no
@@ -27,6 +32,7 @@ type PropertyGalleryProps = {
 export function PropertyGallery({ items }: PropertyGalleryProps) {
 	const [index, setIndex] = useState<number | null>(null);
 	const current = index === null ? null : items[index];
+	const onCloseAutoFocus = useReturnFocus(current !== null);
 
 	const step = (delta: number) => {
 		setIndex((previous) => {
@@ -81,6 +87,7 @@ export function PropertyGallery({ items }: PropertyGalleryProps) {
 					<Dialog.Overlay className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-[2px]" />
 					<Dialog.Content
 						onKeyDown={onKeyDown}
+						onCloseAutoFocus={onCloseAutoFocus}
 						className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 p-5 focus:outline-none sm:p-10"
 					>
 						<Dialog.Title className="sr-only">
