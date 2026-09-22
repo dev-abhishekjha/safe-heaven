@@ -3,6 +3,7 @@
 import { NavLink } from '@/components/layout/NavLink';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
+import { chatHref } from '@/utils/ChatMessage';
 import { CHAT, CONTACT, NAV_ITEMS } from '@/utils/SiteConfig';
 import * as Dialog from '@radix-ui/react-dialog';
 import Link from 'next/link';
@@ -65,7 +66,7 @@ export function NavDrawer() {
 							{CONTACT.phoneDisplay}
 						</Link>
 						<Button asChild variant="chat" size="lg">
-							<a href={CHAT.url} target="_blank" rel="noopener noreferrer">
+							<a href={chatHref()} target="_blank" rel="noopener noreferrer">
 								<Icon name="chat" size={18} />
 								Chat on {CHAT.label}
 							</a>

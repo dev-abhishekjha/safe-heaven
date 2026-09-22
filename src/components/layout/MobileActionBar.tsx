@@ -1,5 +1,6 @@
 import { EnquiryButton } from '@/components/enquiry/EnquiryButton';
 import { Icon } from '@/components/ui/Icon';
+import { chatHref } from '@/utils/ChatMessage';
 import { CHAT, CONTACT } from '@/utils/SiteConfig';
 
 /**
@@ -21,7 +22,7 @@ export function MobileActionBar() {
 					<Icon name="phone" size={20} />
 				</a>
 				<a
-					href={CHAT.url}
+					href={chatHref()}
 					target="_blank"
 					rel="noopener noreferrer"
 					aria-label={`Message us on ${CHAT.label}`}

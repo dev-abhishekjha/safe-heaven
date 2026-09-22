@@ -5,7 +5,9 @@ import type { EnquiryPrefill } from '@/components/enquiry/EnquiryProvider';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { Modal } from '@/components/ui/Modal';
+import { chatHrefAfterEnquiry } from '@/utils/ChatMessage';
 import { CHAT, CONTACT } from '@/utils/SiteConfig';
+import type { EnquiryInput } from '@/utils/UtilsValidation';
 import { useState } from 'react';
 
 type EnquiryModalProps = {
@@ -14,7 +16,12 @@ type EnquiryModalProps = {
 	prefill?: EnquiryPrefill;
 };
 
-type Sent = { name: string; phone: string };
+/** `roomType` is carried so the WhatsApp link can say what they asked about. */
+type Sent = {
+	name: string;
+	phone: string;
+	roomType?: EnquiryInput['roomType'];
+};
 
 export function EnquiryModal({
 	open,
@@ -66,7 +73,10 @@ export function EnquiryModal({
 							{CONTACT.phoneDisplay}
 						</a>
 						<a
-							href={CHAT.url}
+							href={chatHrefAfterEnquiry({
+								name: sent.name,
+								roomType: sent.roomType,
+							})}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center gap-2.5 text-sm text-ink-soft"
@@ -83,7 +93,9 @@ export function EnquiryModal({
 			) : (
 				<EnquiryForm
 					prefill={prefill}
-					onSuccess={(name, phone) => setSent({ name, phone })}
+					onSuccess={(name, phone, roomType) =>
+						setSent({ name, phone, roomType })
+					}
 				/>
 			)}
 		</Modal>

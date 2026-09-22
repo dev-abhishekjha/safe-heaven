@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
+import { type ChatContext, chatHrefAfterFailure } from '@/utils/ChatMessage';
 import { CHAT, CONTACT } from '@/utils/SiteConfig';
 
 type SubmitErrorProps = {
@@ -9,6 +10,11 @@ type SubmitErrorProps = {
 	/** Present when retrying could plausibly work — a network blip, not a 400. */
 	onRetry?: () => void;
 	retrying?: boolean;
+	/**
+	 * What they had typed. Carried into the WhatsApp message so the person who
+	 * just watched a form fail does not have to type it a second time.
+	 */
+	context?: ChatContext;
 };
 
 /**
@@ -23,12 +29,19 @@ type SubmitErrorProps = {
  *    becomes a competitor's enquiry.
  * 2. The phone number, because someone who has already failed once should not
  *    be asked to trust the same form twice.
- * 3. WhatsApp, for anyone who would rather not call.
+ * 3. WhatsApp, for anyone who would rather not call — pre-filled with what
+ *    they typed, and saying the form failed, so they are not mistaken for
+ *    someone enquiring twice.
  *
  * `role="alert"` so a screen reader announces it rather than leaving someone
  * wondering whether the button did anything.
  */
-export function SubmitError({ message, onRetry, retrying }: SubmitErrorProps) {
+export function SubmitError({
+	message,
+	onRetry,
+	retrying,
+	context,
+}: SubmitErrorProps) {
 	return (
 		<div
 			role="alert"
@@ -49,7 +62,11 @@ export function SubmitError({ message, onRetry, retrying }: SubmitErrorProps) {
 					</a>
 				</Button>
 				<Button asChild size="sm" variant="chat">
-					<a href={CHAT.url} target="_blank" rel="noopener noreferrer">
+					<a
+						href={chatHrefAfterFailure(context ?? {})}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
 						<Icon name="chat" size={15} aria-hidden />
 						{CHAT.label}
 					</a>

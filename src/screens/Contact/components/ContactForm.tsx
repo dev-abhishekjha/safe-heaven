@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
 import { Icon } from '@/components/ui/Icon';
 import { Input, PhoneInput, Select, Textarea } from '@/components/ui/Input';
+import { chatHref } from '@/utils/ChatMessage';
 import { CHAT } from '@/utils/SiteConfig';
 import {
 	type ContactInput,
@@ -87,7 +88,7 @@ export function ContactForm() {
 					than waiting.
 				</p>
 				<Button asChild variant="chat">
-					<a href={CHAT.url} target="_blank" rel="noopener noreferrer">
+					<a href={chatHref()} target="_blank" rel="noopener noreferrer">
 						<Icon name="chat" size={17} aria-hidden />
 						Message us on {CHAT.label}
 					</a>

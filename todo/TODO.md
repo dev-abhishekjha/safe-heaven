@@ -18,15 +18,15 @@ photograph, or an account only you can create.
 
 | | Section | Items |
 |---|---|---|
-| 1 | [Do first](#1-do-first) | 3 |
+| 1 | [Do first](#1-do-first) | 1 |
 | 2 | [Content only you have](#2-content-only-you-have) | 16 |
 | 3 | [Accounts and services](#3-accounts-and-services) | 11 |
 | 4 | [Engineering, ready to pick up](#4-engineering-ready-to-pick-up) | 5 |
 | 5 | [Blocked on real photos](#5-blocked-on-real-photos) | 7 |
-| 6 | [Built, not verified](#6-built-not-verified) | 17 |
+| 6 | [Built, not verified](#6-built-not-verified) | 11 |
 
-A few items appear twice where they genuinely block two things, so 59 lines is
-not 59 separate pieces of work.
+A few items appear twice where they genuinely block two things, so 51 lines is
+not 51 separate pieces of work.
 
 ## The thing to keep in mind
 
@@ -40,32 +40,22 @@ checked.
 
 ## 1. Do first
 
-Three items. None takes long, and the site should not be shown to real
-students until they are done.
-
-- [ ] **Rotate the database password** — `E16.6`
-
-  The current one was pasted into a chat transcript several times during
-  debugging. It is the production database, and two real enquiries are in it.
-
-  Supabase → Settings → Database → Reset database password, then update
-  `DATABASE_PASSWORD` in Vercel and in `.env.local`. Nothing else changes:
-  `DATABASE_URI` carries the literal word `ignored` where a password would go,
-  specifically so this is a one-variable rotation.
-
-- [ ] **Add the Resend variables to Vercel** — `E16.15`, unblocks `E5.9`
-
-  `RESEND_API_KEY`, `RESEND_FROM`, `LEAD_NOTIFY_EMAIL`, all Production.
-
-  Enquiries save correctly and notify nobody. Two leads are already sitting in
-  the database unread. This is the only open item actively costing business.
+One item left. It does not take long, and the site should not be shown to
+real students until it is done.
 
 - [ ] **Log in to `/admin` and read the leads** — `E16.18`
 
   `/admin` serves a login form rather than Payload's create-first-user screen,
-  so the panel is claimed and not open to whoever finds it. Still unconfirmed:
-  that the credentials work, and that the two saved leads are readable with the
-  right phone number and room type.
+  so the panel is claimed and not open to whoever finds it. The database
+  connection is confirmed separately — `/api/room-types` returns all three
+  rooms from Postgres after the 2026-09-22 password rotation.
+
+  What is still unconfirmed is only what needs credentials: that the login
+  works, and that the leads are readable. **Seeing the login form proves
+  nothing** — that page renders whether or not Postgres is reachable.
+
+  While you are in there, delete the three test leads. All of them were
+  submitted during debugging; none is a real student.
 
 ---
 
@@ -299,7 +289,7 @@ Wait for `E15.2`–`E15.4`.
 
 ## 6. Built, not verified
 
-Seventeen items that are written, reviewed and believed to work, but have never
+Eleven items that are written, reviewed and believed to work, but have never
 been exercised by a person. The risk here is different from unfinished work:
 these will probably pass, and the ones that do not will fail in ways nobody has
 imagined.
@@ -312,26 +302,36 @@ smoke-test checklist (`E16.7`) is for.
 
 - [ ] **Shared zod schema, client and server** — `E5.1` · name and phone
       required, everything else optional
-- [ ] **Mobile bottom-sheet variant** — `E5.4`
 - [ ] **Global open state** — `E5.5` · opened from every CTA
-- [ ] **Pre-fill from context** — `E5.6` · room type carried from the card you
-      clicked on the Property page
 - [ ] **Auto-open rules** — `E5.7` · delay after arrival plus exit intent, once
       per visitor, remembered in localStorage. Test this deliberately: getting
       it wrong is the most annoying possible bug
-- [ ] **In-modal success state** — `E5.10` · echoes what they asked for, no
-      redirect
-- [ ] **Honeypot field** — `E5.12` · submit with the hidden field filled and
-      confirm it reports success while writing nothing
-- [ ] **WhatsApp deep link** — `E5.15` · pre-filled message including room type
-- [ ] **Contact form with subject dropdown** — `E10.2`
-- [ ] **The `formsubmit.co` form is really gone** — `E5.16`
+- [ ] **Honeypot field** — `E5.12` · the field is present and correct in the
+      DOM (`name="company"`, `tabIndex=-1`, `autocomplete="off"`), and a
+      submission with it filled returned `{"ok":true}` — the shape the
+      honeypot path produces. **Not conclusive**: browser automation does not
+      reliably drive react-hook-form's internal state, and the leads table is
+      admin-only, so "nothing was written" could not be checked directly.
+      Settle it from the inbox: the 2026-09-22 smoke test should produce an
+      email for TEST 2 and **none** for TEST 3. A TEST 3 email means the
+      honeypot is not working
+- [ ] **WhatsApp deep link** — `E5.15` · **gap closed 2026-09-22, needs a
+      post-deploy check.** Every chat link now carries a message, built in
+      `src/utils/ChatMessage.ts`. The one that matters: `SubmitError` says the
+      form failed and names the room, so someone whose enquiry just died does
+      not retype it and is not mistaken for enquiring twice. The modal's
+      success link names the room and the person. Verify after deploy that a
+      WhatsApp link opened from a room card arrives pre-filled with that room
 
 ### Email
 
-- [ ] **Team notification** — `E5.9` · blocked on `E16.15`, section 1
-- [ ] **Applicant confirmation** — `E5.11` · blocked on `E16.5`, a verified
-      Resend domain
+The team notification is **verified in production on 2026-09-22** — a test
+enquiry reached abhi108akj@gmail.com from `onboarding@resend.dev` with the
+name, phone, room type, source page and message intact.
+
+- [ ] **Applicant confirmation** — `E5.11` · blocked on `E16.5`. Cannot work
+      on `onboarding@resend.dev`: that sender only delivers to the Resend
+      account owner, and this one goes to students
 
 ### Content plumbing
 

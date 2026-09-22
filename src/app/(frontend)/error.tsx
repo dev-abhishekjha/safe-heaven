@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { chatHref } from '@/utils/ChatMessage';
 import { debugError } from '@/utils/Logger';
 import { CHAT, CONTACT } from '@/utils/SiteConfig';
 import { useEffect } from 'react';
@@ -53,7 +54,7 @@ export default function ErrorBoundary({
 					</a>
 				</Button>
 				<Button asChild variant="chat" size="lg">
-					<a href={CHAT.url} target="_blank" rel="noopener noreferrer">
+					<a href={chatHref()} target="_blank" rel="noopener noreferrer">
 						<Icon name="chat" size={17} />
 						{CHAT.label}
 					</a>

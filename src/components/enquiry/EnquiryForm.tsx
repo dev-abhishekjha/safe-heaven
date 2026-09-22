@@ -9,6 +9,7 @@ import { Field } from '@/components/ui/Field';
 import { Icon } from '@/components/ui/Icon';
 import { Input, PhoneInput, Textarea } from '@/components/ui/Input';
 import { MonthPicker } from '@/components/ui/MonthPicker';
+import { chatHrefForRoom } from '@/utils/ChatMessage';
 import { CHAT } from '@/utils/SiteConfig';
 import {
 	type EnquiryInput,
@@ -22,7 +23,11 @@ import { Controller, useForm } from 'react-hook-form';
 
 type EnquiryFormProps = {
 	prefill?: EnquiryPrefill;
-	onSuccess: (name: string, phone: string) => void;
+	onSuccess: (
+		name: string,
+		phone: string,
+		roomType?: EnquiryInput['roomType'],
+	) => void;
 };
 
 export function EnquiryForm({ prefill, onSuccess }: EnquiryFormProps) {
@@ -36,6 +41,7 @@ export function EnquiryForm({ prefill, onSuccess }: EnquiryFormProps) {
 		register,
 		handleSubmit,
 		control,
+		getValues,
 		formState: { errors, isSubmitting },
 	} = useForm<EnquiryInput>({
 		resolver: zodResolver(enquirySchema),
@@ -51,6 +57,19 @@ export function EnquiryForm({ prefill, onSuccess }: EnquiryFormProps) {
 		},
 	});
 
+	/**
+	 * Mirrored in plain state rather than read through `watch`.
+	 *
+	 * Someone picks a room and then reaches for WhatsApp instead, so the chat
+	 * link has to keep up — but `watch` is a subscription the React Compiler
+	 * cannot reason about, and adding it made `react-hooks/incompatible-library`
+	 * fire and the compiler skip this component. A `useState` updated beside
+	 * `field.onChange` costs one line and keeps the form compilable.
+	 */
+	const [chosenRoom, setChosenRoom] = useState<EnquiryInput['roomType']>(
+		prefill?.roomType ?? 'unsure',
+	);
+
 	const onSubmit = handleSubmit(async (values) => {
 		setFormError(null);
 		setCanRetry(false);
@@ -62,7 +81,7 @@ export function EnquiryForm({ prefill, onSuccess }: EnquiryFormProps) {
 			});
 
 			if (result.ok) {
-				onSuccess(values.fullName, values.phone);
+				onSuccess(values.fullName, values.phone, values.roomType);
 				return;
 			}
 
@@ -140,7 +159,10 @@ export function EnquiryForm({ prefill, onSuccess }: EnquiryFormProps) {
 							name="enq-room"
 							options={[...ROOM_TYPE_OPTIONS]}
 							value={field.value ?? null}
-							onChange={field.onChange}
+							onChange={(value) => {
+								field.onChange(value);
+								setChosenRoom(value as EnquiryInput['roomType']);
+							}}
 						/>
 					)}
 				/>
@@ -170,6 +192,10 @@ export function EnquiryForm({ prefill, onSuccess }: EnquiryFormProps) {
 
 			{formError ? (
 				<SubmitError
+					// Read rather than watched: this renders only after a failed
+					// submit, so the value is settled, and watching the name would
+					// re-render the whole form on every keystroke.
+					context={{ roomType: chosenRoom, name: getValues('fullName') }}
 					message={formError}
 					onRetry={canRetry ? () => void onSubmit() : undefined}
 					retrying={isSubmitting}
@@ -192,7 +218,11 @@ export function EnquiryForm({ prefill, onSuccess }: EnquiryFormProps) {
 			</div>
 
 			<Button asChild variant="secondary" size="lg" className="w-full">
-				<a href={CHAT.url} target="_blank" rel="noopener noreferrer">
+				<a
+					href={chatHrefForRoom(chosenRoom)}
+					target="_blank"
+					rel="noopener noreferrer"
+				>
 					<Icon name="chat" size={18} className="text-chat" />
 					Chat on {CHAT.label} instead
 				</a>

@@ -79,7 +79,7 @@ export function Modal({
 						</div>
 
 						<Dialog.Close
-							className="flex size-9 shrink-0 items-center justify-center rounded-pill bg-surface-alt text-muted transition-colors hover:bg-surface-sunken hover:text-ink"
+							className="flex size-11 shrink-0 items-center justify-center rounded-pill bg-surface-alt text-muted transition-colors hover:bg-surface-sunken hover:text-ink"
 							aria-label="Close"
 						>
 							<Icon name="close" size={16} />
