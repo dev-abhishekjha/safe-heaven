@@ -37,6 +37,22 @@ export default buildConfig({
 		meta: {
 			titleSuffix: ' — Safe Heaven Admin',
 		},
+		/**
+		 * Component paths beginning with `/` resolve against this directory.
+		 * Payload defaults it to the project root, which would look for
+		 * `<root>/payload/components/...` — everything of ours lives under
+		 * `src`, so point it there and the paths below read like imports.
+		 */
+		importMap: {
+			baseDir: dirname,
+		},
+		components: {
+			// Adds a show/hide toggle to every password field in the panel.
+			// A provider, not a field override — see the component for why.
+			providers: [
+				'/payload/components/ProviderPasswordReveal#ProviderPasswordReveal',
+			],
+		},
 	},
 	collections: [
 		Properties,

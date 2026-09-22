@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { ADDRESS, MAP } from '@/utils/SiteConfig';
+import { cn } from '@/utils/UtilsClassName';
 import { useState } from 'react';
 
 /**
@@ -18,13 +19,18 @@ import { useState } from 'react';
  * The "Open in Maps" link is always there, and for someone on a phone it is
  * the better answer anyway — it opens the app they will actually navigate
  * with.
+ *
+ * `className` sizes the whole block, not the frame: the frame is `flex-1` over
+ * a minimum height, so dropping this into a grid cell lets it stretch to match
+ * the column beside it, and dropping it into ordinary flow leaves it at the
+ * minimum.
  */
-export function ContactMap() {
+export function MapEmbed({ className }: { className?: string }) {
 	const [loaded, setLoaded] = useState(false);
 
 	return (
-		<div className="flex flex-col gap-3">
-			<div className="relative h-72 overflow-hidden rounded-panel border border-accent-line bg-accent-tint-strong sm:h-96">
+		<div className={cn('flex flex-col gap-3', className)}>
+			<div className="relative flex-1 min-h-72 overflow-hidden rounded-panel border border-accent-line bg-accent-tint-strong sm:min-h-96">
 				{loaded ? (
 					<iframe
 						src={MAP.embedUrl}

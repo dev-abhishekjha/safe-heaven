@@ -31,3 +31,45 @@
 	outline: 2px solid #0ea5e9;
 	outline-offset: 1px;
 }
+
+// Password reveal toggle.
+//
+// Sits inside the field, over the input's right edge. Colours are Payload's
+// own elevation tokens rather than anything of ours, so it reads correctly in
+// both the light and the dark theme — see the note at the top of this file.
+// Behaviour lives in `src/payload/components/ProviderPasswordReveal.tsx`.
+.password-reveal__shell {
+	position: relative;
+
+	> input {
+		// Room for the button, so a long password never runs underneath it.
+		padding-right: 2.75rem;
+	}
+}
+
+.password-reveal {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.75rem;
+	height: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--theme-elevation-500);
+	cursor: pointer;
+	transition: color 100ms ease;
+
+	&:hover,
+	&[aria-pressed='true'] {
+		color: var(--theme-elevation-800);
+	}
+
+	svg {
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+}

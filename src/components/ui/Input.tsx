@@ -91,6 +91,12 @@ export function Select({
  * Indian mobile number entry. The +91 prefix is rendered as static text rather
  * than sitting in the value, so what gets stored is always ten clean digits and
  * a student typing "+91 98765..." cannot double it up.
+ *
+ * The shell is the control as far as focus is concerned: `data-control-shell`
+ * and `data-control-inner` hand the focus ring to the rounded wrapper instead
+ * of the bare input inside it. Without them the browser draws a square box
+ * around the input, inset from the wrapper's border — see the composed-control
+ * rules in `globals.css`.
  */
 export function PhoneInput({
 	className,
@@ -100,6 +106,7 @@ export function PhoneInput({
 }: InputHTMLAttributes<HTMLInputElement> & WithError) {
 	return (
 		<div
+			data-control-shell=""
 			className={cn(
 				CONTROL_CLASSES,
 				'flex items-center gap-2 py-0 pl-4 pr-0',
@@ -111,6 +118,7 @@ export function PhoneInput({
 			<span className="select-none text-sm text-muted">+91</span>
 			<input
 				id={id}
+				data-control-inner=""
 				type="tel"
 				inputMode="numeric"
 				autoComplete="tel-national"

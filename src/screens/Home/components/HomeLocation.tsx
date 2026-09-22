@@ -4,7 +4,7 @@ import { Container } from '@/components/ui/Container';
 import { DistanceList } from '@/components/ui/DistanceList';
 import type { DistanceItem } from '@/components/ui/DistanceList';
 import { Icon, type IconName } from '@/components/ui/Icon';
-import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
+import { MapEmbed } from '@/components/ui/MapEmbed';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import {
 	NEARBY_LABELS,
@@ -55,11 +55,7 @@ export function HomeLocation({
 			/>
 
 			<div className="grid gap-6 lg:grid-cols-5">
-				<PlaceholderImage
-					tone="map"
-					label={`Map — ${ADDRESS.line1}`}
-					className="h-64 rounded-panel lg:col-span-3 lg:h-full lg:min-h-[22rem]"
-				/>
+				<MapEmbed className="lg:col-span-3" />
 
 				<div className="flex flex-col gap-5 lg:col-span-2">
 					{categories.map((category) => (

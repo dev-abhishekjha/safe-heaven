@@ -69,17 +69,26 @@ export const SOCIALS: { label: string; url: string }[] = [];
 /**
  * Map links.
  *
- * Built from the address rather than coordinates, because the exact pin is not
- * confirmed yet. `embedUrl` is the keyless Google embed — no API key, and it
- * is only ever requested after the visitor asks for it.
+ * Built from the listing itself, not from an address search. `MAP_CID` is
+ * Google's permanent id for the "Safe haven accommodation Hostel" place —
+ * `0x4355879da95fcbf0` in the Maps share URL, in decimal — so both links land
+ * on the real pin with the business card attached, rather than on whatever a
+ * text search for the street happens to match that week.
+ *
+ * `embedUrl` is the keyless Google embed: no API key, and it is only ever
+ * requested after the visitor asks for the map. Coordinates are kept beside
+ * it because directions and structured data need them in that form.
  */
-const MAP_QUERY = encodeURIComponent(
-	'Safe Heaven Accomodations, Mitra Enclave, Sector P7, Greater Noida',
-);
+const MAP_CID = '4851933284782820336';
+const MAP_LATITUDE = 28.482911;
+const MAP_LONGITUDE = 77.509593;
 
 export const MAP = {
-	embedUrl: `https://www.google.com/maps?q=${MAP_QUERY}&output=embed`,
-	openUrl: `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`,
+	latitude: MAP_LATITUDE,
+	longitude: MAP_LONGITUDE,
+	embedUrl: `https://www.google.com/maps?cid=${MAP_CID}&output=embed`,
+	openUrl: `https://maps.google.com/?cid=${MAP_CID}`,
+	directionsUrl: `https://www.google.com/maps/dir/?api=1&destination=${MAP_LATITUDE}%2C${MAP_LONGITUDE}`,
 } as const;
 
 export type NavItem = {

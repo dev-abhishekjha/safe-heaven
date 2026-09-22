@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { MapEmbed } from '@/components/ui/MapEmbed';
 import { Panel } from '@/components/ui/Panel';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ContactDetails } from '@/screens/Contact/components/ContactDetails';
 import { ContactDistances } from '@/screens/Contact/components/ContactDistances';
 import { ContactForm } from '@/screens/Contact/components/ContactForm';
-import { ContactMap } from '@/screens/Contact/components/ContactMap';
 import { ContactSocials } from '@/screens/Contact/components/ContactSocials';
 import type { ContactContent } from '@/services/pageContentService';
 import { CHAT } from '@/utils/SiteConfig';
@@ -80,7 +80,7 @@ export function ScreenContact({ content }: { content: ContactContent }) {
 						title="Where we are."
 						description="Three minutes from Knowledge Park II Metro, on foot."
 					/>
-					<ContactMap />
+					<MapEmbed />
 				</Container>
 			</section>
 
