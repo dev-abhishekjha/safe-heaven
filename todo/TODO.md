@@ -23,10 +23,10 @@ photograph, or an account only you can create.
 | 3 | [Accounts and services](#3-accounts-and-services) | 11 |
 | 4 | [Engineering, ready to pick up](#4-engineering-ready-to-pick-up) | 5 |
 | 5 | [Blocked on real photos](#5-blocked-on-real-photos) | 7 |
-| 6 | [Built, not verified](#6-built-not-verified) | 11 |
+| 6 | [Built, not verified](#6-built-not-verified) | 10 |
 
-A few items appear twice where they genuinely block two things, so 51 lines is
-not 51 separate pieces of work.
+A few items appear twice where they genuinely block two things, so 50 lines is
+not 50 separate pieces of work.
 
 ## The thing to keep in mind
 
@@ -289,7 +289,7 @@ Wait for `E15.2`–`E15.4`.
 
 ## 6. Built, not verified
 
-Eleven items that are written, reviewed and believed to work, but have never
+Ten items that are written, reviewed and believed to work, but have never
 been exercised by a person. The risk here is different from unfinished work:
 these will probably pass, and the ones that do not will fail in ways nobody has
 imagined.
@@ -315,14 +315,6 @@ smoke-test checklist (`E16.7`) is for.
       Settle it from the inbox: the 2026-09-22 smoke test should produce an
       email for TEST 2 and **none** for TEST 3. A TEST 3 email means the
       honeypot is not working
-- [ ] **WhatsApp deep link** — `E5.15` · **gap closed 2026-09-22, needs a
-      post-deploy check.** Every chat link now carries a message, built in
-      `src/utils/ChatMessage.ts`. The one that matters: `SubmitError` says the
-      form failed and names the room, so someone whose enquiry just died does
-      not retype it and is not mistaken for enquiring twice. The modal's
-      success link names the room and the person. Verify after deploy that a
-      WhatsApp link opened from a room card arrives pre-filled with that room
-
 ### Email
 
 The team notification is **verified in production on 2026-09-22** — a test

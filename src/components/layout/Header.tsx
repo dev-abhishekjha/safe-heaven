@@ -36,7 +36,7 @@ export function Header() {
 							{SITE_NAME}
 						</span>
 						<span className="hidden text-[9px] font-medium uppercase tracking-[0.22em] text-label sm:block">
-							Accomodations
+							Accommodations
 						</span>
 					</span>
 				</Link>

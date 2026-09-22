@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
 	title: 'The property',
 	description:
-		'Single, double and triple sharing rooms at Safe Heaven, Mitra Enclave, Sector P7 — furnished, all-inclusive rent, three minutes from Knowledge Park II Metro.',
+		'Single, double and triple sharing rooms at Safe Haven, Mitra Enclave, Sector P7 — furnished, all-inclusive rent, three minutes from Knowledge Park II Metro.',
 	alternates: { canonical: '/property' },
 };
 

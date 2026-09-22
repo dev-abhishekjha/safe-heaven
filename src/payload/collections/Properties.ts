@@ -28,7 +28,7 @@ export const Properties: CollectionConfig = {
 			name: 'name',
 			type: 'text',
 			required: true,
-			defaultValue: 'Safe Heaven Accomodations',
+			defaultValue: 'Safe Haven Accommodations',
 		},
 		{
 			name: 'slug',

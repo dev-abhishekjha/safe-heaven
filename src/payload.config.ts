@@ -35,7 +35,7 @@ export default buildConfig({
 	admin: {
 		user: Users.slug,
 		meta: {
-			titleSuffix: ' — Safe Heaven Admin',
+			titleSuffix: ' — Safe Haven Admin',
 		},
 		/**
 		 * Component paths beginning with `/` resolve against this directory.

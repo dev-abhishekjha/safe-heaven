@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
 	title: 'Contact us',
 	description:
-		'Call, WhatsApp or message Safe Heaven Accomodations — Mitra Enclave, Sector P7, Greater Noida. Three minutes from Knowledge Park II Metro.',
+		'Call, WhatsApp or message Safe Haven Accommodations — Mitra Enclave, Sector P7, Greater Noida. Three minutes from Knowledge Park II Metro.',
 	alternates: { canonical: '/contact' },
 };
 

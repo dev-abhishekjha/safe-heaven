@@ -41,7 +41,7 @@ const playfairDisplay = localFont({
 
 const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL ?? 'http://localhost:3000';
 
-const siteName = 'Safe Heaven Accomodations';
+const siteName = 'Safe Haven Accommodations';
 const siteDescription =
 	'Boys-only PG in Greater Noida — furnished single, double and triple rooms at Mitra Enclave, Sector P7, a three-minute walk from Knowledge Park II Metro.';
 

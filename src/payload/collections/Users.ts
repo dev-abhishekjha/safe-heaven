@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 /**
- * Admin accounts for the Safe Heaven CMS.
+ * Admin accounts for the Safe Haven CMS.
  *
  * Single role for now (every user is a full admin) — see docs/PLAN.md.
  * Roles can be added later without a data migration.

@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
 	// Home uses the layout's default title rather than the %s template.
 	title: {
-		absolute: 'Safe Heaven Accomodations — Boys PG in Greater Noida',
+		absolute: 'Safe Haven Accommodations — Boys PG in Greater Noida',
 	},
 };
 

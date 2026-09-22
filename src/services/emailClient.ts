@@ -97,11 +97,11 @@ export async function sendEnquiryConfirmation(
 
 	return send({
 		to: lead.email,
-		subject: 'We got your enquiry — Safe Heaven Accomodations',
+		subject: 'We got your enquiry — Safe Haven Accommodations',
 		text: [
 			`Hi ${lead.fullName},`,
 			'',
-			'Thanks for getting in touch. Someone from Safe Heaven will call you within 24 hours with rent and availability.',
+			'Thanks for getting in touch. Someone from Safe Haven will call you within 24 hours with rent and availability.',
 			'',
 			`In a hurry? Call ${CONTACT.phoneDisplay} or message us on WhatsApp.`,
 			'',

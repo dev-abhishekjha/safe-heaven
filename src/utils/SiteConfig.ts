@@ -9,7 +9,7 @@
  */
 
 export const SITE_NAME = 'Safe Haven';
-export const SITE_LEGAL_NAME = 'Safe Heaven Accomodations';
+export const SITE_LEGAL_NAME = 'Safe Haven Accommodations';
 
 export const CONTACT = {
 	phoneDisplay: '+91 82734 58926',

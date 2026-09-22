@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
 	title: 'FAQ',
 	description:
-		'Rent, deposits, room types, visitors and moving in — the questions we are asked most about Safe Heaven Accomodations in Greater Noida.',
+		'Rent, deposits, room types, visitors and moving in — the questions we are asked most about Safe Haven Accommodations in Greater Noida.',
 	alternates: { canonical: '/faq' },
 };
 

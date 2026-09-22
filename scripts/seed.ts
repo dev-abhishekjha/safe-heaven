@@ -156,7 +156,7 @@ async function main() {
 		'properties',
 		{ slug: { equals: 'safe-haven' } },
 		{
-			name: 'Safe Heaven Accomodations',
+			name: 'Safe Haven Accommodations',
 			slug: 'safe-haven',
 			locality: ADDRESS.line1,
 			addressLine: `${ADDRESS.line1}, ${ADDRESS.line2}`,

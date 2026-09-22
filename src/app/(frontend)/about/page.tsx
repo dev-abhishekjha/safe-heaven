@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
 	title: 'About us',
 	description:
-		'Why we started Safe Heaven Accomodations, the people who run the building, and what we hold to.',
+		'Why we started Safe Haven Accommodations, the people who run the building, and what we hold to.',
 	alternates: { canonical: '/about' },
 };
 
