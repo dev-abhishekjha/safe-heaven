@@ -1,4 +1,5 @@
 import type { IconName } from '@/components/ui/Icon';
+import type { MediaImageSource } from '@/components/ui/MediaImage';
 
 /**
  * Community page content — PLACEHOLDER SEED.
@@ -60,6 +61,8 @@ export const GROUND_RULES: GroundRule[] = [
 export type CommunityPostCard = {
 	id: string;
 	title: string;
+	/** The post's cover image, when one was uploaded. */
+	photo?: MediaImageSource;
 	/** Rendered as a readable date; ISO in, formatted at the component. */
 	date: string;
 	excerpt?: string;

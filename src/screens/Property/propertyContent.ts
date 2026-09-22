@@ -1,4 +1,5 @@
 import type { IconName } from '@/components/ui/Icon';
+import type { MediaImageSource } from '@/components/ui/MediaImage';
 import type { SeedRoom } from '@/content/rooms';
 
 /**
@@ -15,6 +16,8 @@ export type GalleryItem = {
 	label: string;
 	/** Spans two columns on desktop — used for the wide shots. */
 	wide?: boolean;
+	/** The real photo, once one is uploaded against the property record. */
+	photo?: MediaImageSource;
 };
 
 /**

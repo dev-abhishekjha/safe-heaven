@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { DistanceItem } from '@/components/ui/DistanceList';
 import type { IconName } from '@/components/ui/Icon';
+import type { MediaImageSource } from '@/components/ui/MediaImage';
 import {
 	NEARBY,
 	NEARBY_LABELS,
@@ -14,13 +15,14 @@ import {
 	type SeedRoom,
 	occupancyLabel,
 } from '@/content/rooms';
+import type { Media } from '@/payload-types';
 import {
 	getFaqs,
 	getFeaturedTestimonials,
 	getFounders,
 } from '@/repositories/contentRepository';
 import { getNearbyPlacesByCategory } from '@/repositories/placeRepository';
-import { getRoomTypes } from '@/repositories/propertyRepository';
+import { getProperty, getRoomTypes } from '@/repositories/propertyRepository';
 import {
 	getAboutPage,
 	getCommunityPage,
@@ -50,6 +52,7 @@ import {
 	type ValuePoint,
 	WHY_POINTS,
 } from '@/screens/Home/homeContent';
+import { GALLERY, type GalleryItem } from '@/screens/Property/propertyContent';
 import { debugError } from '@/utils/Logger';
 
 /**
@@ -88,10 +91,46 @@ async function withFallback<T>(
 const isFilled = (value: unknown): boolean =>
 	Array.isArray(value) ? value.length > 0 : Boolean(value);
 
+/**
+ * A Payload upload field, as the UI wants it.
+ *
+ * Every repository queries at `depth: 1`, so the relation arrives populated —
+ * but the generated type is still `number | Media`, because a shallower query
+ * would return just the id. The object check is a real guard, not a formality.
+ *
+ * Prefers the `card` derivative (720x540 WebP) over the original, which is
+ * whatever came off someone's phone — several megabytes, and the wrong thing
+ * to send a student on mobile data.
+ */
+function toImageSource(
+	upload: number | Media | null | undefined,
+): MediaImageSource | undefined {
+	if (!upload || typeof upload !== 'object') {
+		return undefined;
+	}
+
+	const rendition = upload.sizes?.card?.url ? upload.sizes.card : upload;
+
+	if (!rendition.url) {
+		return undefined;
+	}
+
+	return {
+		url: rendition.url,
+		alt: upload.alt,
+		width: rendition.width ?? undefined,
+		height: rendition.height ?? undefined,
+	};
+}
+
 export type HomeContent = {
 	eyebrow: string;
 	title: string;
 	subtitle: string;
+	/** The building. Falls back to the property record when the global is empty. */
+	heroPhoto?: MediaImageSource;
+	/** First gallery photo — the common room shot beside the community block. */
+	communityPhoto?: MediaImageSource;
 	trustPoints: TrustPoint[];
 	whyPoints: ValuePoint[];
 	bookingSteps: BookingStep[];
@@ -135,6 +174,8 @@ function toSeedRooms(
 						? 'Full'
 						: 'Available',
 			icon: seed?.icon ?? 'home',
+			// First photo only — the card and the property block each show one.
+			photo: toImageSource(row.images?.[0]?.image),
 		};
 	});
 }
@@ -163,8 +204,9 @@ function toDistanceGroups(
 }
 
 export async function getHomeContent(): Promise<HomeContent> {
-	const [page, rooms, nearby, testimonials] = await Promise.all([
+	const [page, property, rooms, nearby, testimonials] = await Promise.all([
 		withFallback('home page global', getHomePage, null),
+		withFallback('property', getProperty, null),
 		withFallback('room types', getRoomTypes, []),
 		withFallback('nearby places', getNearbyPlacesByCategory, null),
 		withFallback('testimonials', () => getFeaturedTestimonials(3), []),
@@ -174,6 +216,11 @@ export async function getHomeContent(): Promise<HomeContent> {
 		eyebrow: page?.eyebrow || SEED_HERO.eyebrow,
 		title: page?.title || SEED_HERO.title,
 		subtitle: page?.subtitle || SEED_HERO.subtitle,
+		// The global wins when it is set, so the home page can show something
+		// other than the property's own main photo without a schema change.
+		heroPhoto:
+			toImageSource(page?.heroImage) ?? toImageSource(property?.heroImage),
+		communityPhoto: toImageSource(property?.gallery?.[0]?.image),
 		trustPoints: isFilled(page?.trustPoints)
 			? (page?.trustPoints ?? []).map((point) => ({
 					icon: point.iconKey as IconName,
@@ -211,13 +258,36 @@ export async function getHomeContent(): Promise<HomeContent> {
 export type PropertyContent = {
 	rooms: SeedRoom[];
 	inclusions: typeof RENT_INCLUSIONS;
+	/** Real photos when they exist, the labelled placeholder grid until then. */
+	gallery: GalleryItem[];
 };
 
 export async function getPropertyContent(): Promise<PropertyContent> {
-	const rooms = await withFallback('room types', getRoomTypes, []);
+	const [rooms, property] = await Promise.all([
+		withFallback('room types', getRoomTypes, []),
+		withFallback('property', getProperty, null),
+	]);
+
+	/**
+	 * The placeholder grid is a fixed eight tiles laid out to fill a
+	 * three-column grid exactly. Real photos do not arrive in eights, so once
+	 * there is even one the grid is built from the uploads instead and the
+	 * labelled tiles drop away entirely — a mix of real photos and "Terrace (to
+	 * be photographed)" reads as a half-finished page rather than an honest one.
+	 */
+	const uploaded = (property?.gallery ?? [])
+		.map((entry, index): GalleryItem | null => {
+			const photo = toImageSource(entry.image);
+			return photo
+				? { id: entry.id ?? String(index), label: photo.alt, photo }
+				: null;
+		})
+		.filter((item): item is GalleryItem => item !== null);
+
 	return {
 		rooms: rooms.length > 0 ? toSeedRooms(rooms) : ROOMS,
 		inclusions: RENT_INCLUSIONS,
+		gallery: uploaded.length > 0 ? uploaded : GALLERY,
 	};
 }
 
@@ -311,6 +381,8 @@ function lexicalToText(doc: unknown): string {
 export type AboutContent = {
 	/** Null keeps the loud "not written yet" block visible — see AboutOrigin. */
 	story: string | null;
+	/** The building, beside the origin story. */
+	originPhoto?: MediaImageSource;
 	stats: Stat[];
 	values: Value[];
 	founders: FounderCard[];
@@ -325,13 +397,15 @@ export type AboutContent = {
  * one is the exact failure this page is built to avoid.
  */
 export async function getAboutContent(): Promise<AboutContent> {
-	const [page, founders] = await Promise.all([
+	const [page, founders, property] = await Promise.all([
 		withFallback('about page global', getAboutPage, null),
 		withFallback('founders', getFounders, []),
+		withFallback('property', getProperty, null),
 	]);
 
 	return {
 		story: page?.intro?.trim() ? page.intro : null,
+		originPhoto: toImageSource(property?.heroImage),
 		stats: isFilled(page?.stats)
 			? (page?.stats ?? []).map((stat) => ({
 					value: stat.value,
@@ -353,6 +427,7 @@ export async function getAboutContent(): Promise<AboutContent> {
 						role: founder.role,
 						bio: founder.bio,
 						linkedinUrl: founder.linkedinUrl ?? undefined,
+						photo: toImageSource(founder.photo),
 					}))
 				: FOUNDERS,
 	};

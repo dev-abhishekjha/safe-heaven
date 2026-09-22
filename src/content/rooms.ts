@@ -1,4 +1,5 @@
 import type { IconName } from '@/components/ui/Icon';
+import type { MediaImageSource } from '@/components/ui/MediaImage';
 
 /**
  * The rooms — PLACEHOLDER SEED, and the single source for them.
@@ -20,6 +21,8 @@ export type RoomKey = 'single' | 'double' | 'triple';
 export type SeedRoom = {
 	key: RoomKey;
 	name: string;
+	/** From the CMS. Absent until someone uploads one — the card falls back. */
+	photo?: MediaImageSource;
 	/**
 	 * How many people share the room. This is the number the CMS stores and
 	 * the seed writes; `occupancy` is only ever its rendering.

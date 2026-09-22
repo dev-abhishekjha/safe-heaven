@@ -30,7 +30,7 @@ export function ScreenAbout({ content }: ScreenAboutProps) {
 					title="Why we started Safe Haven."
 					description="Our story, the people behind the building, and what we will not cut corners on."
 				/>
-				<AboutOrigin story={content.story} />
+				<AboutOrigin story={content.story} photo={content.originPhoto} />
 			</Container>
 
 			<AboutStats stats={content.stats} />

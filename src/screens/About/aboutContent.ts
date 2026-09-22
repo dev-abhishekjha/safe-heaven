@@ -1,4 +1,5 @@
 import type { IconName } from '@/components/ui/Icon';
+import type { MediaImageSource } from '@/components/ui/MediaImage';
 
 /**
  * About page content — PLACEHOLDER SEED.
@@ -29,6 +30,8 @@ export type FounderCard = {
 	role: string;
 	bio: string;
 	linkedinUrl?: string;
+	/** Absent until someone uploads one — the card falls back to a placeholder. */
+	photo?: MediaImageSource;
 };
 
 /** Empty until you supply names, roles and bios — E15.5. */

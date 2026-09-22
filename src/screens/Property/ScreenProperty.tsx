@@ -6,7 +6,6 @@ import { PropertyGallery } from '@/screens/Property/components/PropertyGallery';
 import { PropertyHouseRules } from '@/screens/Property/components/PropertyHouseRules';
 import { PropertyInclusions } from '@/screens/Property/components/PropertyInclusions';
 import { PropertyRoomBlock } from '@/screens/Property/components/PropertyRoomBlock';
-import { GALLERY } from '@/screens/Property/propertyContent';
 import type { PropertyContent } from '@/services/pageContentService';
 
 /**
@@ -61,7 +60,7 @@ export function ScreenProperty({ content }: { content: PropertyContent }) {
 					title="Have a look around."
 					description="Tap any photo to see it larger."
 				/>
-				<PropertyGallery items={GALLERY} />
+				<PropertyGallery items={content.gallery} />
 			</Container>
 
 			<section className="border-t border-line bg-surface-alt">

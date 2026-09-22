@@ -1,6 +1,7 @@
 import { EnquiryButton } from '@/components/enquiry/EnquiryButton';
 import { Badge } from '@/components/ui/Badge';
 import { Icon } from '@/components/ui/Icon';
+import { MediaImage } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import type { SeedRoom } from '@/content/rooms';
 import { cn } from '@/utils/UtilsClassName';
@@ -26,10 +27,18 @@ export function PropertyRoomBlock({ room, reversed }: PropertyRoomBlockProps) {
 			id={room.key}
 			className="grid items-center gap-8 scroll-mt-24 lg:grid-cols-2 lg:gap-14"
 		>
-			<PlaceholderImage
-				label={`Photo — ${room.name.toLowerCase()}`}
-				className={cn('h-60 rounded-panel sm:h-80', reversed && 'lg:order-2')}
-			/>
+			{room.photo ? (
+				<MediaImage
+					source={room.photo}
+					sizes="(min-width: 1024px) 50vw, 100vw"
+					className={cn('h-60 rounded-panel sm:h-80', reversed && 'lg:order-2')}
+				/>
+			) : (
+				<PlaceholderImage
+					label={`Photo — ${room.name.toLowerCase()}`}
+					className={cn('h-60 rounded-panel sm:h-80', reversed && 'lg:order-2')}
+				/>
+			)}
 
 			<div className="flex flex-col gap-5">
 				<div className="flex flex-wrap items-center gap-3">

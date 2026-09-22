@@ -1,9 +1,12 @@
 import { Badge } from '@/components/ui/Badge';
+import { MediaImage } from '@/components/ui/MediaImage';
+import type { MediaImageSource } from '@/components/ui/MediaImage';
 import { Panel } from '@/components/ui/Panel';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 
 type AboutOriginProps = {
 	story: string | null;
+	photo?: MediaImageSource;
 };
 
 /**
@@ -19,7 +22,7 @@ type AboutOriginProps = {
  * exist this renders a state that cannot be mistaken for finished — see
  * E15.6.
  */
-export function AboutOrigin({ story }: AboutOriginProps) {
+export function AboutOrigin({ story, photo }: AboutOriginProps) {
 	if (!story) {
 		return (
 			<Panel
@@ -56,10 +59,18 @@ export function AboutOrigin({ story }: AboutOriginProps) {
 					</p>
 				))}
 			</div>
-			<PlaceholderImage
-				label="Photo — the building, early on"
-				className="h-64 rounded-panel sm:h-80"
-			/>
+			{photo ? (
+				<MediaImage
+					source={photo}
+					sizes="(min-width: 1024px) 50vw, 100vw"
+					className="h-64 rounded-panel sm:h-80"
+				/>
+			) : (
+				<PlaceholderImage
+					label="Photo — the building, early on"
+					className="h-64 rounded-panel sm:h-80"
+				/>
+			)}
 		</div>
 	);
 }

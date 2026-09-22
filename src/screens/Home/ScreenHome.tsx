@@ -29,12 +29,13 @@ export function ScreenHome({ content }: { content: HomeContent }) {
 				eyebrow={content.eyebrow}
 				title={content.title}
 				subtitle={content.subtitle}
+				photo={content.heroPhoto}
 			/>
 			<HomeTrustStrip points={content.trustPoints} />
 			<HomeWhy points={content.whyPoints} />
 			<HomeRooms rooms={content.rooms} />
 			<HomeLocation nearby={content.nearby} />
-			<HomeCommunity />
+			<HomeCommunity photo={content.communityPhoto} />
 			<HomeBookingSteps steps={content.bookingSteps} />
 			<HomeTestimonials items={content.testimonials} />
 			<HomeClosingCta />

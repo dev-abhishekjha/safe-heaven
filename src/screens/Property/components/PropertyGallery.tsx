@@ -1,6 +1,7 @@
 'use client';
 
 import { Icon } from '@/components/ui/Icon';
+import { MediaImage } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { useReturnFocus } from '@/components/ui/useReturnFocus';
 import type { GalleryItem } from '@/screens/Property/propertyContent';
@@ -66,10 +67,21 @@ export function PropertyGallery({ items }: PropertyGalleryProps) {
 							aria-label={`Open photo: ${item.label}`}
 							className="block w-full rounded-card transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
 						>
-							<PlaceholderImage
-								label={`Photo — ${item.label.toLowerCase()}`}
-								className={cn('h-36 w-full sm:h-48', item.wide && 'sm:h-64')}
-							/>
+							{item.photo ? (
+								<MediaImage
+									source={item.photo}
+									sizes="(min-width: 1024px) 33vw, 50vw"
+									className={cn(
+										'h-36 w-full rounded-card sm:h-48',
+										item.wide && 'sm:h-64',
+									)}
+								/>
+							) : (
+								<PlaceholderImage
+									label={`Photo — ${item.label.toLowerCase()}`}
+									className={cn('h-36 w-full sm:h-48', item.wide && 'sm:h-64')}
+								/>
+							)}
 						</button>
 					</li>
 				))}
@@ -105,10 +117,21 @@ export function PropertyGallery({ items }: PropertyGalleryProps) {
 								disabled={items.length < 2}
 							/>
 
-							<PlaceholderImage
-								label={current ? `Photo — ${current.label.toLowerCase()}` : ''}
-								className="h-[50vh] flex-1 rounded-panel bg-surface"
-							/>
+							{current?.photo ? (
+								<MediaImage
+									source={current.photo}
+									// Full-bleed in the lightbox, so ask for the widest file.
+									sizes="100vw"
+									className="h-[50vh] flex-1 rounded-panel bg-surface"
+								/>
+							) : (
+								<PlaceholderImage
+									label={
+										current ? `Photo — ${current.label.toLowerCase()}` : ''
+									}
+									className="h-[50vh] flex-1 rounded-panel bg-surface"
+								/>
+							)}
 
 							<LightboxArrow
 								direction="next"

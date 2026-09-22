@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
+import { MediaImage } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import type { CommunityPostCard } from '@/screens/Community/communityContent';
@@ -41,10 +42,18 @@ export function CommunityPosts({ posts }: CommunityPostsProps) {
 							padded={false}
 							className="flex flex-col"
 						>
-							<PlaceholderImage
-								label={`Photo — ${post.title.toLowerCase()}`}
-								className="h-40 rounded-none border-0 border-b border-dashed"
-							/>
+							{post.photo ? (
+								<MediaImage
+									source={post.photo}
+									sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+									className="h-40 border-b border-line"
+								/>
+							) : (
+								<PlaceholderImage
+									label={`Photo — ${post.title.toLowerCase()}`}
+									className="h-40 rounded-none border-0 border-b border-dashed"
+								/>
+							)}
 							<div className="flex flex-1 flex-col gap-2.5 p-6">
 								<time
 									dateTime={post.date}

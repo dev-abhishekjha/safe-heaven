@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { MediaImage, type MediaImageSource } from '@/components/ui/MediaImage';
 import { Panel } from '@/components/ui/Panel';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -19,7 +20,7 @@ const CHAT_MESSAGE =
  * compete with it. Keeping the two visually distinct is the reason `chat` is
  * its own variant in the design system rather than a green override.
  */
-export function HomeCommunity() {
+export function HomeCommunity({ photo }: { photo?: MediaImageSource }) {
 	return (
 		<Container className="flex flex-col gap-10 py-16 lg:py-20">
 			<SectionHeading
@@ -29,10 +30,18 @@ export function HomeCommunity() {
 			/>
 
 			<div className="grid gap-6 lg:grid-cols-2 lg:items-stretch">
-				<PlaceholderImage
-					label="Photo — common room"
-					className="h-60 rounded-panel lg:h-full lg:min-h-[20rem]"
-				/>
+				{photo ? (
+					<MediaImage
+						source={photo}
+						sizes="(min-width: 1024px) 50vw, 100vw"
+						className="h-60 rounded-panel lg:h-full lg:min-h-[20rem]"
+					/>
+				) : (
+					<PlaceholderImage
+						label="Photo — common room"
+						className="h-60 rounded-panel lg:h-full lg:min-h-[20rem]"
+					/>
+				)}
 
 				<div className="flex flex-col gap-5">
 					<ul className="flex flex-col gap-4">

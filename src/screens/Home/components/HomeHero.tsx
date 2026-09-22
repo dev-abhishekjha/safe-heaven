@@ -2,6 +2,8 @@ import { EnquiryButton } from '@/components/enquiry/EnquiryButton';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { MediaImage } from '@/components/ui/MediaImage';
+import type { MediaImageSource } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { Eyebrow } from '@/components/ui/SectionHeading';
 import { ADDRESS, CONTACT } from '@/utils/SiteConfig';
@@ -20,9 +22,10 @@ type HomeHeroProps = {
 	eyebrow: string;
 	title: string;
 	subtitle: string;
+	photo?: MediaImageSource;
 };
 
-export function HomeHero({ eyebrow, title, subtitle }: HomeHeroProps) {
+export function HomeHero({ eyebrow, title, subtitle, photo }: HomeHeroProps) {
 	return (
 		<Container className="grid items-center gap-12 py-14 lg:grid-cols-2 lg:gap-16 lg:py-20">
 			<div className="flex flex-col gap-7">
@@ -62,10 +65,20 @@ export function HomeHero({ eyebrow, title, subtitle }: HomeHeroProps) {
 			</div>
 
 			<div className="relative">
-				<PlaceholderImage
-					label="Photo — building exterior"
-					className="h-72 rounded-panel sm:h-[26rem] lg:h-[32rem]"
-				/>
+				{photo ? (
+					<MediaImage
+						source={photo}
+						// Above the fold, so it is the one image worth loading eagerly.
+						priority
+						sizes="(min-width: 1024px) 50vw, 100vw"
+						className="h-72 rounded-panel sm:h-[26rem] lg:h-[32rem]"
+					/>
+				) : (
+					<PlaceholderImage
+						label="Photo — building exterior"
+						className="h-72 rounded-panel sm:h-[26rem] lg:h-[32rem]"
+					/>
+				)}
 
 				{/* Sits inside the photo on desktop, stacks beneath it on phones,
 				    where an overlay would cover the only picture on the page. */}

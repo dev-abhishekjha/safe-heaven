@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { MediaImage } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import type { SeedRoom } from '@/content/rooms';
@@ -46,10 +47,18 @@ export function HomeRooms({ rooms }: { rooms: SeedRoom[] }) {
 							padded={false}
 							className="flex flex-col"
 						>
-							<PlaceholderImage
-								label={`Photo — ${room.name.toLowerCase()}`}
-								className="h-44 rounded-none border-0 border-b border-dashed"
-							/>
+							{room.photo ? (
+								<MediaImage
+									source={room.photo}
+									sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+									className="h-44 border-b border-line"
+								/>
+							) : (
+								<PlaceholderImage
+									label={`Photo — ${room.name.toLowerCase()}`}
+									className="h-44 rounded-none border-0 border-b border-dashed"
+								/>
+							)}
 
 							<div className="flex flex-1 flex-col gap-4 p-6">
 								<div className="flex items-start justify-between gap-3">

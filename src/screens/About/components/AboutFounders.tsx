@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
+import { MediaImage } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import type { FounderCard } from '@/screens/About/aboutContent';
 
@@ -27,10 +28,19 @@ export function AboutFounders({ founders }: AboutFoundersProps) {
 		<ul className="grid gap-6 sm:grid-cols-2">
 			{founders.map((founder) => (
 				<Card as="li" key={founder.id} padded={false} className="flex flex-col">
-					<PlaceholderImage
-						label={`Photo — ${founder.name.toLowerCase()}`}
-						className="h-56 rounded-none border-0 border-b border-dashed"
-					/>
+					{founder.photo ? (
+						<MediaImage
+							source={founder.photo}
+							// Two columns from the `sm` breakpoint up, one below it.
+							sizes="(min-width: 640px) 50vw, 100vw"
+							className="h-56 border-b border-line"
+						/>
+					) : (
+						<PlaceholderImage
+							label={`Photo — ${founder.name.toLowerCase()}`}
+							className="h-56 rounded-none border-0 border-b border-dashed"
+						/>
+					)}
 					<div className="flex flex-col gap-3 p-6 sm:p-7">
 						<div className="flex flex-col gap-1">
 							<h3 className="text-lg font-semibold text-ink">{founder.name}</h3>
