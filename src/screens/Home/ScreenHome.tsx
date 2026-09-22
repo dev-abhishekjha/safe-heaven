@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/ui/Reveal';
 import { HomeClosingCta } from '@/screens/Home/components/HomeClosingCta';
 import { HomeHero } from '@/screens/Home/components/HomeHero';
 import { HomeLocation } from '@/screens/Home/components/HomeLocation';
@@ -33,12 +34,26 @@ export function ScreenHome({ content }: { content: HomeContent }) {
 				subtitle={content.subtitle}
 				photo={content.heroPhoto}
 			/>
-			<HomeTrustStrip points={content.trustPoints} />
-			<HomeWhy points={content.whyPoints} />
-			<HomeRooms rooms={content.rooms} />
-			<HomeLocation nearby={content.nearby} />
-			<HomeTestimonials items={content.testimonials} />
-			<HomeClosingCta />
+			{/* The hero is deliberately not wrapped: it is what the page opens
+			    on, and animating it delays the only thing above the fold. */}
+			<Reveal>
+				<HomeTrustStrip points={content.trustPoints} />
+			</Reveal>
+			<Reveal>
+				<HomeWhy points={content.whyPoints} />
+			</Reveal>
+			<Reveal>
+				<HomeRooms rooms={content.rooms} />
+			</Reveal>
+			<Reveal>
+				<HomeLocation nearby={content.nearby} />
+			</Reveal>
+			<Reveal>
+				<HomeTestimonials items={content.testimonials} />
+			</Reveal>
+			<Reveal>
+				<HomeClosingCta />
+			</Reveal>
 		</>
 	);
 }

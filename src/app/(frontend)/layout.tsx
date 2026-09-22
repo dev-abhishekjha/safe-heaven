@@ -88,6 +88,14 @@ export default function FrontendLayout({
 			className={`${dmSans.variable} ${playfairDisplay.variable} h-full antialiased`}
 		>
 			<body className="flex min-h-full flex-col">
+				{/* Belt and braces for the scroll reveals: if scripts are off,
+				    nothing can ever set [data-reveal] anyway, but this makes the
+				    visible state explicit rather than incidental. */}
+				<noscript>
+					<style>
+						{'[data-reveal]{opacity:1 !important;transform:none !important}'}
+					</style>
+				</noscript>
 				{/* First tab stop — lets keyboard users skip the nav on every page. */}
 				<a
 					href="#main"

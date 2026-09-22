@@ -50,7 +50,11 @@ export function Button({
 			type={asChild ? undefined : (type ?? 'button')}
 			className={cn(
 				'inline-flex items-center justify-center rounded-pill font-semibold',
-				'transition-colors duration-150',
+				// Colour and transform together: the press gives the button a
+				// physical quality that a colour change alone does not, and
+				// `active:` fires on touch as well as mouse.
+				'transition-[color,background-color,border-color,transform,box-shadow] duration-150 ease-out',
+				'active:scale-[0.97]',
 				'disabled:pointer-events-none disabled:bg-line disabled:text-label disabled:shadow-none',
 				VARIANTS[variant],
 				SIZES[size],
