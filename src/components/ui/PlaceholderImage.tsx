@@ -12,7 +12,7 @@ type PlaceholderImageProps = {
  *
  * Deliberately dashed and labelled rather than a grey block or a stock image:
  * a missing photo has to be obvious at a glance during review, and impossible
- * to mistake for finished work at launch. Tracked under E15 in docs/TASKS.md.
+ * to mistake for finished work at launch. Tracked under E15 in todo/TODO.md.
  */
 export function PlaceholderImage({
 	label,

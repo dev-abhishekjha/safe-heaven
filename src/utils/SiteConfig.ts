@@ -1,10 +1,11 @@
 /**
  * Site-wide constants.
  *
- * TEMPORARY HOME. Everything here moves to the `siteSettings` global in E3 so
- * staff can change it without a deploy — see docs/TASKS.md E3.11. Until then
- * this is the single source, so there is exactly one place to update when the
- * real phone number and email arrive (E15.11).
+ * Build-time defaults. The `siteSettings` global is live and `getSiteSettings`
+ * feeds the header, footer and action bar, so staff can change these without a
+ * deploy. What stays here is the fallback used when Postgres is unreachable,
+ * and the single place to update when the real phone number and email arrive
+ * (E15.11 in todo/TODO.md).
  */
 
 export const SITE_NAME = 'Safe Haven';

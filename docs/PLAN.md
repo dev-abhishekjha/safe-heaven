@@ -134,10 +134,11 @@ Booking popup is a **global modal**, not a route — opened from any CTA, pre-fi
 
 ## 5. Phases, in build order
 
-> **Superseded by [`TASKS.md`](TASKS.md).** That file holds the live backlog — 17 epics with
-> subtasks, reflecting the single-property scope and the Home · Property · Community ·
-> About Us · FAQ · Contact Us navigation. The phases below are kept for the reasoning behind
-> the ordering; track work in TASKS.md.
+> **Superseded by [`todo/TODO.md`](../todo/TODO.md).** That file is the live
+> backlog and holds only what is still open; finished work is in the git
+> history, and the decisions worth keeping from it are in `AGENTS.md`. What
+> follows here is the original plan — useful for the data model and the
+> reasoning behind the ordering, not for tracking work.
 
 
 ### Phase 0 — Foundation & risk spike ⚠️ *do first*

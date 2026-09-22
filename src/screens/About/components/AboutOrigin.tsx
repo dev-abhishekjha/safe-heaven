@@ -37,8 +37,8 @@ export function AboutOrigin({ story }: AboutOriginProps) {
 					site does as much work.
 				</p>
 				<p className="text-sm text-muted">
-					Tracked as E15.6 in docs/TASKS.md. This block is deliberately loud —
-					it must not reach launch.
+					Tracked as E15.6 in todo/TODO.md. This block is deliberately loud — it
+					must not reach launch.
 				</p>
 			</Panel>
 		);
