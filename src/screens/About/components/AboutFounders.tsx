@@ -33,7 +33,11 @@ export function AboutFounders({ founders }: AboutFoundersProps) {
 							source={founder.photo}
 							// Two columns from the `sm` breakpoint up, one below it.
 							sizes="(min-width: 640px) 50vw, 100vw"
-							className="h-56 border-b border-line"
+							// A portrait frame at the card's full width, anchored to the
+							// top. A phone headshot is tall; the old fixed-height band was
+							// landscape, so it took a strip out of the middle of the face.
+							anchor="top"
+							className="aspect-[4/5] w-full border-b border-line"
 						/>
 					) : (
 						<PlaceholderImage

@@ -32,6 +32,7 @@ import {
 	FOUNDERS,
 	type FounderCard,
 	STATS,
+	STORY_DRAFT,
 	type Stat,
 	VALUES,
 	type Value,
@@ -98,28 +99,36 @@ const isFilled = (value: unknown): boolean =>
  * but the generated type is still `number | Media`, because a shallower query
  * would return just the id. The object check is a real guard, not a formality.
  *
- * Prefers the `card` derivative (720x540 WebP) over the original, which is
- * whatever came off someone's phone — several megabytes, and the wrong thing
- * to send a student on mobile data.
+ * Always prefers a derivative over the original, which is whatever came off
+ * someone's phone — several megabytes, and the wrong thing to send a student
+ * on mobile data.
  */
 function toImageSource(
 	upload: number | Media | null | undefined,
+	/**
+	 * `card` is a hard 720x540 centre crop — right for a wide band, wrong for a
+	 * portrait, which it slices through the middle. `gallery` is 1200px wide
+	 * with no height, so it keeps whatever shape the photo actually is; use it
+	 * wherever the frame is not landscape.
+	 */
+	rendition: 'card' | 'gallery' = 'card',
 ): MediaImageSource | undefined {
 	if (!upload || typeof upload !== 'object') {
 		return undefined;
 	}
 
-	const rendition = upload.sizes?.card?.url ? upload.sizes.card : upload;
+	const preferred = upload.sizes?.[rendition];
+	const chosen = preferred?.url ? preferred : upload;
 
-	if (!rendition.url) {
+	if (!chosen.url) {
 		return undefined;
 	}
 
 	return {
-		url: rendition.url,
+		url: chosen.url,
 		alt: upload.alt,
-		width: rendition.width ?? undefined,
-		height: rendition.height ?? undefined,
+		width: chosen.width ?? undefined,
+		height: chosen.height ?? undefined,
 	};
 }
 
@@ -404,7 +413,7 @@ export async function getAboutContent(): Promise<AboutContent> {
 	]);
 
 	return {
-		story: page?.intro?.trim() ? page.intro : null,
+		story: page?.intro?.trim() ? page.intro : STORY_DRAFT,
 		originPhoto: toImageSource(property?.heroImage),
 		stats: isFilled(page?.stats)
 			? (page?.stats ?? []).map((stat) => ({
@@ -427,7 +436,7 @@ export async function getAboutContent(): Promise<AboutContent> {
 						role: founder.role,
 						bio: founder.bio,
 						linkedinUrl: founder.linkedinUrl ?? undefined,
-						photo: toImageSource(founder.photo),
+						photo: toImageSource(founder.photo, 'gallery'),
 					}))
 				: FOUNDERS,
 	};

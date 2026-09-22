@@ -40,7 +40,6 @@ export function ScreenAbout({ content }: ScreenAboutProps) {
 					<SectionHeading
 						eyebrow="The people"
 						title="Who actually runs this."
-						description="Not a management company. You will meet whoever answers the phone."
 					/>
 					<AboutFounders founders={content.founders} />
 				</Container>

@@ -1,5 +1,4 @@
 import { EnquiryButton } from '@/components/enquiry/EnquiryButton';
-import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
 import { MediaImage } from '@/components/ui/MediaImage';
@@ -7,7 +6,6 @@ import type { MediaImageSource } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { Eyebrow } from '@/components/ui/SectionHeading';
 import { ADDRESS, CONTACT } from '@/utils/SiteConfig';
-import Link from 'next/link';
 
 /**
  * The hero.
@@ -44,12 +42,6 @@ export function HomeHero({ eyebrow, title, subtitle, photo }: HomeHeroProps) {
 
 				<div className="flex flex-col gap-3 sm:flex-row">
 					<EnquiryButton size="lg" prefill={{ source: 'home-hero' }} />
-					<Button asChild variant="secondary" size="lg">
-						<Link href="/property">
-							See the property
-							<Icon name="arrowRight" size={17} />
-						</Link>
-					</Button>
 				</div>
 
 				<p className="text-sm text-muted">

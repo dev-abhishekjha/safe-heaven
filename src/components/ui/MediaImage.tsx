@@ -32,6 +32,12 @@ type MediaImageProps = {
 	sizes?: string;
 	/** Only for an image above the fold — it opts out of lazy loading. */
 	priority?: boolean;
+	/**
+	 * Which part of the photo survives the crop. `top` for anything with a
+	 * person in it: a face sits in the upper third, so centre-cropping a
+	 * portrait into a wide frame cuts the head off.
+	 */
+	anchor?: 'center' | 'top';
 };
 
 export function MediaImage({
@@ -39,6 +45,7 @@ export function MediaImage({
 	className,
 	sizes = '100vw',
 	priority,
+	anchor = 'center',
 }: MediaImageProps) {
 	return (
 		<div className={cn('relative overflow-hidden bg-surface-alt', className)}>
@@ -48,7 +55,10 @@ export function MediaImage({
 				fill
 				sizes={sizes}
 				priority={priority}
-				className="object-cover"
+				className={cn(
+					'object-cover',
+					anchor === 'top' ? 'object-top' : 'object-center',
+				)}
 			/>
 		</div>
 	);

@@ -6,11 +6,13 @@ import type { MediaImageSource } from '@/components/ui/MediaImage';
  *
  * Shaped to match the `about-page` global and the `founders` collection.
  *
- * Two things on this page cannot be drafted and are deliberately empty: the
- * origin story and the founders. Both are statements about real people, and a
- * plausible invention would read as fact. The components render a visibly
- * unfinished state instead, so the gap is impossible to miss in review and
- * impossible to ship by accident.
+ * `FOUNDERS` stays deliberately empty: it is a statement about real people,
+ * and a plausible invention would read as fact. The component renders a
+ * visibly unfinished state instead, so the gap is impossible to miss.
+ *
+ * `STORY_DRAFT` is the one exception, added on request so the page reads
+ * whole. It is DRAFT COPY WRITTEN BY AN ASSISTANT, not by the owner — see the
+ * note on it before this ships.
  */
 
 export type Stat = { value: string; label: string };
@@ -36,6 +38,24 @@ export type FounderCard = {
 
 /** Empty until you supply names, roles and bios — E15.5. */
 export const FOUNDERS: FounderCard[] = [];
+
+/**
+ * Origin story — DRAFT. Replace before launch (E15.6).
+ *
+ * Written to fill the page, not to be true. It deliberately makes no factual
+ * claim that could be wrong — no dates, no numbers, no prior jobs, no names —
+ * and only restates commitments the rest of the site already makes, so it
+ * cannot contradict another page. That is the most a draft can safely do.
+ *
+ * It is still words in your voice on your About page. Edit it in the CMS
+ * (`about-page` → intro), which overrides this, and the real version replaces
+ * it everywhere at once.
+ */
+export const STORY_DRAFT = `Safe Haven started from something we kept watching happen. A student moves to Greater Noida for a course, takes a room sight unseen over a phone call, and finds out afterwards what the rent actually includes — and who to call when the water stops.
+
+We wanted to run the opposite of that. One building, looked after by the people who own it, with the number said plainly before anyone agrees to anything. A gate that genuinely gets locked at night, because that is the first thing a parent asks about and the last thing worth economising on.
+
+Everything here follows from that. Nothing is paid on this website. You speak to a person before you commit, you see the room before you move in, and the person who answers the phone is the person responsible for the answer.`;
 
 export type Value = { icon: IconName; title: string; body: string };
 
