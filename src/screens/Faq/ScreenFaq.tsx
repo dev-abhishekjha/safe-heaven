@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { InlineLink } from '@/components/ui/InlineLink';
 import { Panel } from '@/components/ui/Panel';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { FaqGroup } from '@/screens/Faq/components/FaqGroup';
@@ -31,7 +32,15 @@ export function ScreenFaq({ faqs = FAQS }: ScreenFaqProps = {}) {
 				as="h1"
 				eyebrow="FAQ"
 				title="The questions we get asked most."
-				description="Rent, deposits, rules and moving in. If yours is not here, ask — it is a faster answer than reading."
+				description={
+					<>
+						Rent, deposits, rules and moving in. If yours is not here,{' '}
+						<InlineLink href="/contact">ask us directly</InlineLink> — it is a
+						faster answer than reading. Most questions about space and
+						furnishing are answered on the{' '}
+						<InlineLink href="/property">room and property page</InlineLink>.
+					</>
+				}
 			/>
 
 			<div className="flex flex-col gap-10">

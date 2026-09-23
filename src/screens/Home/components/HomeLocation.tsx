@@ -4,6 +4,7 @@ import { Container } from '@/components/ui/Container';
 import { DistanceList } from '@/components/ui/DistanceList';
 import type { DistanceItem } from '@/components/ui/DistanceList';
 import { Icon, type IconName } from '@/components/ui/Icon';
+import { InlineLink } from '@/components/ui/InlineLink';
 import { MapEmbed } from '@/components/ui/MapEmbed';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import {
@@ -43,7 +44,15 @@ export function HomeLocation({
 			<SectionHeading
 				eyebrow="Location"
 				title="Everything you need is a short walk or a short ride."
-				description={`${ADDRESS.line1}, ${ADDRESS.line2}.`}
+				description={
+					<>
+						{ADDRESS.line1}, {ADDRESS.line2}. See{' '}
+						<InlineLink href="/contact">
+							how to find the building and when you can visit
+						</InlineLink>
+						.
+					</>
+				}
 				action={
 					<Button asChild variant="secondary">
 						<Link href="/contact">

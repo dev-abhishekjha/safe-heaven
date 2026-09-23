@@ -1,5 +1,4 @@
 import { Container } from '@/components/ui/Container';
-import { Icon } from '@/components/ui/Icon';
 import {
 	ADDRESS,
 	CONTACT,
@@ -8,6 +7,7 @@ import {
 	SITE_LEGAL_NAME,
 	SITE_NAME,
 } from '@/utils/SiteConfig';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const PAGE_LINKS = NAV_ITEMS.filter((item) => item.href !== '/');
@@ -19,9 +19,13 @@ export function Footer() {
 				<div className="grid gap-10 border-b border-line pb-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
 					<div className="flex flex-col gap-4">
 						<div className="flex items-center gap-3">
-							<span className="flex size-9 items-center justify-center rounded-field bg-accent-tint text-accent">
-								<Icon name="home" size={20} />
-							</span>
+							<Image
+								src="/logo.png"
+								alt=""
+								width={36}
+								height={36}
+								className="size-9 shrink-0"
+							/>
 							<span className="text-[13px] font-bold uppercase tracking-[0.14em] text-ink">
 								{SITE_NAME}
 							</span>

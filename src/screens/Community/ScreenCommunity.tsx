@@ -1,5 +1,6 @@
 import { CtaBand } from '@/components/sections/CtaBand';
 import { Container } from '@/components/ui/Container';
+import { InlineLink } from '@/components/ui/InlineLink';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import {
 	COMMUNITY_POSTS,
@@ -54,7 +55,15 @@ export function ScreenCommunity({
 				<SectionHeading
 					eyebrow="Ground rules"
 					title="Three rules, and why each one exists."
-					description="Short enough to read, and the reason it works."
+					description={
+						<>
+							Short enough to read, and the reason it works. They are set by{' '}
+							<InlineLink href="/about">
+								the people who run the building
+							</InlineLink>
+							, not a management company.
+						</>
+					}
 				/>
 				<CommunityGroundRules rules={content.groundRules} />
 			</Container>

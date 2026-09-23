@@ -1,5 +1,6 @@
 import { CtaBand } from '@/components/sections/CtaBand';
 import { Container } from '@/components/ui/Container';
+import { InlineLink } from '@/components/ui/InlineLink';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { PropertyComparison } from '@/screens/Property/components/PropertyComparison';
 import { PropertyGallery } from '@/screens/Property/components/PropertyGallery';
@@ -27,7 +28,19 @@ export function ScreenProperty({ content }: { content: PropertyContent }) {
 					as="h1"
 					eyebrow="Property"
 					title="Pick the room that fits how you live."
-					description="Every room is furnished and ready to move into, and every rent covers the same things — Wi-Fi, electricity, water and housekeeping. What changes is how much space you have to yourself. We share current rent and availability when you enquire, since both move through the year."
+					description={
+						<>
+							Every room is furnished and ready to move into, and every rent
+							covers the same things — Wi-Fi, electricity, water and
+							housekeeping. What changes is how much space you have to yourself.
+							We share current rent and availability when you enquire, since
+							both move through the year — the{' '}
+							<InlineLink href="/faq">
+								rent, deposit and notice period questions
+							</InlineLink>{' '}
+							are answered in full on the FAQ.
+						</>
+					}
 				/>
 			</Container>
 

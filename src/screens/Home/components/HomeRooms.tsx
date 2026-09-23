@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { InlineLink } from '@/components/ui/InlineLink';
 import { MediaImage } from '@/components/ui/MediaImage';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -28,7 +29,16 @@ export function HomeRooms({ rooms }: { rooms: SeedRoom[] }) {
 				<SectionHeading
 					eyebrow="Rooms"
 					title="Three ways to live here."
-					description="All furnished, all with the same inclusions. The difference is how many people share the room."
+					description={
+						<>
+							All furnished, all with the same inclusions. The difference is how
+							many people share the room — compare{' '}
+							<InlineLink href="/property">
+								single, double and triple sharing rooms
+							</InlineLink>{' '}
+							side by side.
+						</>
+					}
 					action={
 						<Button asChild variant="secondary">
 							<Link href="/property">

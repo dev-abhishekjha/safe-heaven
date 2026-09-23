@@ -9,6 +9,7 @@ import {
 	SITE_LEGAL_NAME,
 	SITE_NAME,
 } from '@/utils/SiteConfig';
+import Image from 'next/image';
 import Link from 'next/link';
 
 /**
@@ -28,9 +29,16 @@ export function Header() {
 					className="flex shrink-0 items-center gap-3"
 					aria-label={`${SITE_LEGAL_NAME} — home`}
 				>
-					<span className="flex size-10 items-center justify-center rounded-field bg-accent-tint text-accent">
-						<Icon name="home" size={22} />
-					</span>
+					<Image
+						src="/logo.png"
+						alt=""
+						width={40}
+						height={40}
+						// The wordmark beside it already names the business, so the
+						// mark is decorative — an alt here would be read twice.
+						priority
+						className="size-10 shrink-0"
+					/>
 					<span className="flex flex-col gap-0.5">
 						<span className="text-sm font-bold uppercase tracking-[0.14em] text-ink">
 							{SITE_NAME}

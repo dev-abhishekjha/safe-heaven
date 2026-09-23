@@ -1,5 +1,6 @@
 import { CtaBand } from '@/components/sections/CtaBand';
 import { Container } from '@/components/ui/Container';
+import { InlineLink } from '@/components/ui/InlineLink';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { AboutFounders } from '@/screens/About/components/AboutFounders';
 import { AboutOrigin } from '@/screens/About/components/AboutOrigin';
@@ -28,7 +29,16 @@ export function ScreenAbout({ content }: ScreenAboutProps) {
 					as="h1"
 					eyebrow="About us"
 					title="Why we started Safe Haven."
-					description="Our story, the people behind the building, and what we will not cut corners on."
+					description={
+						<>
+							Our story, the people behind the building, and what we will not
+							cut corners on. If you came for the rooms themselves, the{' '}
+							<InlineLink href="/property">
+								furnished rooms at Mitra Enclave
+							</InlineLink>{' '}
+							are on the property page.
+						</>
+					}
 				/>
 				<AboutOrigin story={content.story} photo={content.originPhoto} />
 			</Container>
