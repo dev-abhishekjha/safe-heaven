@@ -30,7 +30,13 @@ type MediaImageProps = {
 	 * is correct but wasteful for anything in a column.
 	 */
 	sizes?: string;
-	/** Only for an image above the fold — it opts out of lazy loading. */
+	/**
+	 * Only for the one image above the fold — normally the hero, which is the
+	 * page's largest paint. It is preloaded from `<head>` and fetched at high
+	 * priority. Every other image stays lazy: set this on several and they
+	 * compete for the same bandwidth, so the one that matters arrives later,
+	 * not sooner.
+	 */
 	priority?: boolean;
 	/**
 	 * Which part of the photo survives the crop. `top` for anything with a
@@ -54,7 +60,11 @@ export function MediaImage({
 				alt={source.alt}
 				fill
 				sizes={sizes}
-				priority={priority}
+				// Next 16 deprecated `priority` in favour of `preload`, and neither
+				// raises the request's own priority any more — the live hero was
+				// going out as `fetchpriority="auto"`. So it is set explicitly.
+				preload={priority}
+				fetchPriority={priority ? 'high' : undefined}
 				className={cn(
 					'object-cover',
 					anchor === 'top' ? 'object-top' : 'object-center',

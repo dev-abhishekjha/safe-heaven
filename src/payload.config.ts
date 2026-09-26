@@ -7,6 +7,10 @@ import { s3Storage } from '@payloadcms/storage-s3';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
 import { buildPoolConfig } from './payload/databaseConfig';
+import {
+	buildPublicFileUrl,
+	getPublicBucketUrl,
+} from './payload/storageConfig';
 
 import { Amenities } from './payload/collections/Amenities';
 import {
@@ -30,6 +34,16 @@ import { SiteSettings } from './payload/globals/SiteSettings';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+
+/**
+ * Where the site links uploaded photos from — straight at the public bucket,
+ * not through Payload's `/api/media/file` proxy. See storageConfig.ts for the
+ * measurement that made this worth doing.
+ */
+const publicBucketUrl = getPublicBucketUrl(
+	process.env.S3_ENDPOINT,
+	process.env.S3_BUCKET,
+);
 
 export default buildConfig({
 	admin: {
@@ -91,7 +105,21 @@ export default buildConfig({
 	plugins: process.env.S3_BUCKET
 		? [
 				s3Storage({
-					collections: { media: true },
+					collections: {
+						// With a public URL, every `url` Payload returns — the original and
+						// each derived size — points at the bucket. It is computed on read,
+						// so photos uploaded before this change pick it up with no data
+						// migration. A replaced photo always gets a new filename (Payload
+						// appends -1, -2 … on a clash), which is what makes the long image
+						// cache in next.config.ts safe.
+						media: publicBucketUrl
+							? {
+									disablePayloadAccessControl: true,
+									generateFileURL: ({ filename, prefix }) =>
+										buildPublicFileUrl(publicBucketUrl, filename, prefix),
+								}
+							: true,
+					},
 					bucket: process.env.S3_BUCKET,
 					config: {
 						endpoint: process.env.S3_ENDPOINT,
